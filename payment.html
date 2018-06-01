@@ -1,0 +1,124 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>我的付费</title>
+		<meta content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="format-detection" content="email=no">
+		<meta charset="UTF-8">
+		<link rel="stylesheet" href="css/mui.min.css">
+		<script type="text/javascript" src="js/vue.min2.2.js"></script>
+		<script type="text/javascript" src="js/axios.min.js"></script>
+		<script type="text/javascript" src="js/public.js"></script>
+		<script type="text/javascript" src="js/polyfill.min.js"></script>
+		<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+		<link href="css/mystrap.css" rel="stylesheet" type="text/css" />
+
+		<link rel="stylesheet" href="css/style01.css">
+
+		<script language="javascript" src="http://hovertree.com/ziyuan/jquery/jquery-2.2.0.min.js"></script>
+		<script language="javascript" src="js/public.js"></script>
+		<script type="text/javascript" src="js/vue-resource.min.js"></script>
+
+	</head>
+
+	<body>
+		<script src="js/mui.min.js"></script>
+		<script>
+			// 监听tap事件，解决 a标签 不能跳转页面问题
+			mui('body').on('tap', 'a', function() {
+				document.location.href = this.href;
+			});
+		</script>
+		<script type="text/javascript">
+			window.onload = function() {
+				var appuser = sessionStorage.getItem("appuser");
+				if(!appuser) {
+					self.location = 'login.html';
+				}
+				var appUser = JSON.parse(appuser);
+				var vw = new Vue({
+					el: "#app",
+					data: {
+						message: "",
+						sites: [],
+						appuser: appUser
+					},
+					methods: {
+						init: function() {
+							this.$http.post(url, {
+								appParam: JSON.stringify({
+									action: "myShouldPayment",
+									data: {
+										roomid: appUser.roomid,
+										PaymentStatus: "0"
+									}
+								})
+							}, {
+								emulateJSON: true
+							}).then(function(res) {
+								if(res.data.responsestatus == 0) {
+									alert(res.data.message);
+								} else {
+									this.sites = res.data.data;
+								}
+							})
+						},
+						pay: function(shouldpayid) {
+							var appuser = sessionStorage.getItem("appuser");
+							var appUser = JSON.parse(appuser);
+							var gohref = picurl + "AppAlipay/createOrder.shtml?shouldpayid=" + shouldpayid + "&appuserid=" + appUser.userid;
+							document.location.href = gohref;
+						}
+					}
+				})
+				vw.init();
+
+				//v-bind:href="picurl+'/AppAlipay/createOrder.shtml?shouldpayid='+list.paymentid"
+			}
+
+		/*	function pay(shouldpayid) {
+
+				var appuser = sessionStorage.getItem("appuser");
+				var appUser = JSON.parse(appuser);
+				var gohref = picurl + "AppAlipay/createOrder.shtml?shouldpayid=" + shouldpayid + "&appuserid=" + appUser.userid;
+				document.location.href = gohref;
+			}*/
+		</script>
+
+		<header class="mui-bar mui-bar-nav">
+			<a href="personal.html" class=" mui-icon  mui-icon-left-nav mui-pull-left" style="color:white">
+
+			</a>
+			<h1 class="mui-title">我的付费</h1>
+		</header>
+		<div class="mui-content" style="background: #FFFFFF;" id="app">
+			<div class="mui-card" v-for="list in sites">
+				<div class="mui-card-header">
+					<p>{{list.costName}}</p>
+				</div>
+				<div class="mui-card-content">
+					<div class="mui-card-content-inner">
+						<p class='mui-ellipsis'>房屋：{{ list.buildNo }}-{{ list.unitNo }}-{{ list.roomNo }} </p>
+						<p class='mui-ellipsis'>费率：{{ list.costrate }} </p>
+						<p class='mui-ellipsis'>月数：{{ list.months }}</p>
+						<p class='mui-ellipsis'>建筑面积：{{ list.buildarea }}</p>
+						<p class='mui-ellipsis'>收费开始日期：{{ list.begindate }} </p>
+						<p class='mui-ellipsis'>收费截止日期：{{ list.enddate }}</p>
+						<p class='mui-ellipsis'>最后缴费时限：{{ list.lastdate }}</p>
+						<p class='mui-ellipsis'>应付金额：{{ list.account }}</p>
+					</div>
+				</div>
+				<div class="mui-card-footer">
+					<a class="mui-btn" href="javascript:;" v-on:click="pay(list.shouldid)">支付</a>
+				</div>
+			</div>
+
+		</div>
+	</body>
+
+</html>

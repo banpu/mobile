@@ -1,0 +1,206 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>发布活动</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<script type="text/javascript" src="js/vue.min2.2.js"></script>
+		<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+		<script type="text/javascript" src="js/public.js"></script>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="./css/feedback-page.css" />
+	</head>
+	<style type="text/css">
+		body {
+			background: #efeff4;
+			width: 100%;
+			height: 100%;
+		}
+		
+		a,
+		button,
+		input {
+			-webkit-tap-highlight-color: rgba(255, 0, 0, 0);
+		}
+		
+		ul,
+		li {
+			list-style: none;
+			margin: 0;
+			padding: 0
+		}
+		
+		.content {
+			height: 100%;
+		}
+		
+		.card {
+			width: 100%;
+			margin-left: 0px;
+		}
+		
+		.commit {
+			margin: 0 auto;
+			line-height: 1.1;
+			padding: 10px 15px;
+			display: inherit;
+			width: 80%;
+			background-color: orangered;
+		}
+		
+		.clearfl {
+			clear: both;
+		}
+	</style>
+
+	<body>
+		<script src="js/mui.min.js"></script>
+		<script src="./js/mui.view.js "></script>
+		<script type="text/javascript">
+			mui.init()
+		</script>
+		<script>
+			// 监听tap事件，解决 a标签 不能跳转页面问题
+			mui('body').on('tap', 'a', function() {
+				document.location.href = this.href;
+			});
+		</script>
+		<script src="./js/feedback-page.js"></script>
+		<header class="mui-bar mui-bar-nav">
+			<a href="CommunityActivities.html" class="mui-icon mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color:#000000"></a>
+			<h1 class="mui-title">发布活动</h1>
+		</header>
+		<div class="mui-content content">
+			<div class="mui-card card">
+				<div class="mui-card-content">
+					<div class="mui-card-content-inner ">
+						<div class="mui-input-row">
+							<label>标题：</label>
+							<input id="title" class="mui-input-clear myinput " placeholder="请输入标题">
+						</div>
+						<textarea id="content" style="height: 150px;" placeholder="请在这里输入活动详情"></textarea>
+					</div>
+				</div>
+			</div>
+			<div class="mui-card card">
+				<div class="mui-card-content">
+					<div class="mui-card-content-inner">
+						<div class="mui-input-row">
+							<div style="text-align: left;width: 100%;height: auto;margin-bottom: 10px;">
+								<span>上传帖子的图片(有效两张)：</span>
+							</div>
+							<div id="feedback" class="mui-page feedback">
+								<div id='image-list' class="row image-list">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="mui-card card" style="margin:0;">
+				<div class="mui-card-content" style="background-color: ;">
+					<div class="mui-card-content-inner">
+						<div class="mui-input-row" id="app">
+							<button type="button" class="commit" v-on:click="send">发布</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</body>
+	<script src="./js/feedback-page.js"></script>
+	<script type="text/javascript">
+		var vm = new Vue({
+			el: '#app',
+			data: {
+				info: Object
+			},
+			methods: {
+
+				send: function() {
+					var appuser = sessionStorage.getItem("appuser");
+					//					if(appuser) {
+					//
+					//					} else {
+					//						alert("请先登录！");
+					//						
+					//						return;
+					//					}
+					var appUser = JSON.parse(appuser);
+
+					var title = document.getElementById("title");
+					if(title.value.length == 0) {
+						mui.alert("标题不能为空！", '警告！', function() {});
+						return;
+					}
+					var content = document.getElementById("content");
+					if(content.value.length == 0) {
+						mui.alert("活动详情不能为空！", '警告！', function() {});
+						return;
+					}
+
+					var images = document.getElementsByClassName('image-item');
+					if(images.length > 3) {
+						mui.alert("只能上传两张图片！", '警告！', function() {});
+						return;
+					}
+					var imgStr1 = '';
+					var imgStr2 = '';
+					var str1 = images[0].style.backgroundImage;
+					var str2 = '';
+					if(images.length == 3) {
+						str2 = images[1].style.backgroundImage
+					}
+
+					if(str1 != '') {
+						imgStr1 = str1.split("\"")[1].split(",")[1];
+					}
+					if(str2 != '') {
+						imgStr2 = str2.split("\"")[1].split(",")[1];
+					}
+
+					var paramobj = {
+						"action": "addTopic",
+						"data": {
+							"test": 1,
+							"userid": appUser.userid,
+							"orgid": appUser.orgid,
+							"title": title.value,
+							"imgStr1": imgStr1,
+							"imgStr2": imgStr2,
+							"type": 4,
+							"topictype": '',
+							"content": content.value,
+							"personname": appUser.nickname
+						}
+					};
+					var appParam = JSON.stringify(paramobj);
+					$.post(url, {
+						"appParam": appParam
+					}, function(data) {
+						var code = data.responsestaus;
+
+						if(code == "1") {
+							mui.alert("发布成功", '提示信息',
+								function() {
+									document.location.href = "CommunityActivities.html";
+								});
+
+						} else {
+							mui.alert(data.message, "发布失败！", function() {});
+						}
+
+					}, "json");
+
+				}
+
+			}
+		});
+	</script>
+
+</html>

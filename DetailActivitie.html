@@ -1,0 +1,182 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>活动详情</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<script type="text/javascript" src="js/public.js"></script>
+		<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="./css/icons-extra.css" />
+	</head>
+	<style>
+		.content {
+			margin-top: 54px;
+		}
+		
+		.mui-content a {
+			color: #8F8F94;
+		}
+		
+		.comment {
+			/*margin: auto 2% auto auto;*/
+			background-color: #fff;
+			width: 100%;
+		}
+	</style>
+
+	<body>
+		<script type="text/javascript" src="js/vue.min2.2.js"></script>
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript">
+			mui.init()
+		</script>
+	
+
+		<header class="mui-bar mui-bar-nav">
+			<a href="CommunityActivities.html" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color:#000000"></a>
+			<h1 class="mui-title">活动详情</h1>
+		</header>
+		
+		<div class="mui-card content" id="app">
+			<div class="mui-card-header mui-card-media">
+				<img v-bind:src="picurl+info.imageurl" />
+				<div class="mui-media-body">
+					{{info.title}}
+					<p>{{info.personName}}发表于 {{info.posttime}}</p>
+				</div>
+				<!--<img class="mui-pull-left" src="../images/logo.png" width="34px" height="34px" />
+					<h2>小M</h2>
+					<p>发表于 2016-06-30 15:30</p>-->
+			</div>
+			<div class="mui-card-content" >
+					<img v-bind:src="picurl+info.image" alt="" width="100%"/>
+			</div>
+			<div class="mui-card-content" >
+					<img v-bind:src="picurl+info.image2" alt="" width="100%"/>
+			</div>	
+			<div class="mui-card-content" >
+				<div class="mui-card-content-inner">
+					<p style="color: #333;">{{info.content}}</p>
+					
+				</div>
+			</div>	
+			<div class="mui-card-footer">
+				<div class="mui-content comment">
+					<div id="" style="float: left;">
+
+						<!-- JiaThis Button BEGIN -->
+						<div class="jiathis_style_32x32">
+							<a class="jiathis_button_qzone"></a>
+							<a class="jiathis_button_tsina"></a>
+							<a class="jiathis_button_weixin"></a>
+							<a class="jiathis_button_cqq"></a>
+							<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+						</div>
+					</div>
+					<script type="text/javascript" src="http://v3.jiathis.com/code_mini/jia.js?uid=" charset="utf-8"></script>
+					<!-- JiaThis Button END -->
+					<div style="float: right; margin-top: 4px;">
+						<span v-on:click="pinglun" class="mui-icon-extra mui-icon-extra-comment"></span>
+					</div>
+					<div style="float: right; margin-top: 4px;margin-right: 30px;">
+						<span v-on:click="enter" class="">报名 </span>
+					</div>
+				</div>
+			</div>
+		
+		</div>
+
+	</body>
+	<script type="text/jscript">
+		function GetQueryString(name) {
+			var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+			var r = window.location.search.substr(1).match(reg);
+			if(r != null) return unescape(r[2]);
+			return null;
+		}
+		var appuser = sessionStorage.getItem("appuser");
+		var appUser = "";
+		if(appuser) {
+			appUser = JSON.parse(appuser);
+		}
+		
+		window.onload = function() {
+			var id=GetQueryString('id');
+			var vm = new Vue({
+				el: '#app',
+
+				data: {
+					info:Object
+				},
+				methods: {
+					enter:function(){
+						if(!appuser) {
+							alert("请先登录！");
+							return;
+						}
+						var self = this;
+						var obj = {
+							"action": "addApply",
+							"data": {
+								"id":id,
+ 								"userid":appUser.userid
+								//								"startid":1,
+								//								"lastid":2
+							}
+						};
+						var appParam = JSON.stringify(obj);
+
+						$.post(url, {
+							"appParam": appParam
+						}, function(data) {
+							if(data.responsestaus==1){
+								mui.alert("报名成功！", "恭喜！", function() {});
+							}else{
+								mui.alert(data.message, "提示信息！", function() {});
+							}
+							
+						}, "json");
+					},
+					pinglun:function(){
+						var self = this;
+						//'pinglun.html?id='+info.id
+						document.location.href = "pinglun.html?id="+self.info.id;
+					},
+					getAbout: function() {
+						var self = this;
+						var obj = {
+							//type类型（1-公告，2-新闻，3-话题，4-活动）
+							"action": "getSingleTopic",
+							"data": {
+								"id":id
+								//								"startid":1,
+								//								"lastid":2
+							}
+						};
+						var appParam = JSON.stringify(obj);
+
+						$.post(url, {
+							"appParam": appParam
+						}, function(data) {
+							self.info = data.info;
+							//							alert(data.action);
+							//							alert(data.responsestaus);
+							//							alert(data.message);
+							//							alert("results:" + JSON.stringify(data.results));
+
+						}, "json");
+					}
+
+				}
+			});
+
+			vm.getAbout();
+		}
+		
+	</script>
+
+</html>

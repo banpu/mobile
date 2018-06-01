@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>物业</title>
+		<meta content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="format-detection" content="email=no">
+		<meta charset="UTF-8">
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link rel="stylesheet" href="css/iconfont.css">
+		<script type="text/javascript" src="js/vue.min2.2.js"></script>
+		<script type="text/javascript" src="js/axios.min.js"></script>
+		<script type="text/javascript" src="js/public.js"></script>
+		<script type="text/javascript" src="js/polyfill.min.js"></script>
+		<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+		<link href="css/mystrap.css" rel="stylesheet" type="text/css" />
+		<link rel="stylesheet" href="css/style01.css">
+		<script language="javascript" src="http://hovertree.com/ziyuan/jquery/jquery-2.2.0.min.js"></script>
+		<script language="javascript" src="js/public.js"></script>
+
+	</head>
+
+	<style type="text/css">
+		body {
+			margin-bottom: 60px !important;
+			background-color: #efeff4;
+		}
+	</style>
+
+	<body>
+		<script src="js/mui.min.js"></script>
+		<script>
+			// 监听tap事件，解决 a标签 不能跳转页面问题
+			mui('body').on('tap', 'a', function() {
+				document.location.href = this.href;
+			});
+		</script>
+
+		<header class="mui-bar mui-bar-nav" >
+			<h1 class="mui-title">物业</h1>
+		</header>
+		<div class="mui-content">	
+		<div class="mui-card">
+			<div class="mui-card-content">
+				<div class="mui-card-content-inner">
+			<ul class="mui-table-view mui-grid-view">
+				<li class="mui-table-view-cell mui-media mui-col-xs-6">
+					<a href="addRepair.html">
+						<img src="images/property-01.png">
+						<div class="mui-media-body">添加报修</div>
+					</a>
+				</li>
+
+				<li class="mui-table-view-cell mui-media mui-col-xs-6">
+					<a href="notice.html">
+						<img src="images/property-02.png">
+						<div class="mui-media-body">公告</div>
+					</a>
+				</li>
+				<li class="mui-table-view-cell mui-media mui-col-xs-6">
+					<a href="addComplain.html">
+						<img src="images/property-03.png">
+						<div class="mui-media-body">添加投诉</div>
+					</a>
+				</li>
+				<li class="mui-table-view-cell mui-media mui-col-xs-6">
+					<a href="security_staff.html">
+						<img src="images/property-04.png">
+						<div class="mui-media-body">保安模块</div>
+					</a>
+				</li>
+			</ul>
+				</div>
+			</div>
+
+		</div>
+		
+
+		<div class="mui-card">
+			<div class="mui-card-content">
+				<div class="mui-card-content-inner">
+					<a href="tel:18652097774">
+					<span class="mui-icon mui-icon-phone" style="float: left;"></span>
+
+					<div id="" style="width: auto;padding: 0 0 0 20px;float: left;">
+						物管中心（一键拨号）
+					</div>
+					<br/>
+					<div id="" style="width: auto;padding: 0 0 0 20px;float: left;">
+						1865 2097774
+					</div>
+					</a>
+				</div>
+			</div>
+
+		</div>
+
+		
+</div>
+		<!-- 最下面四个按钮 -->
+			<nav class="mui-bar mui-bar-tab">
+				<a class="mui-tab-item " href="index.html" sytle="color:   #0E90D2;">
+					<span class="mui-icon iconfont  icon-shouye"></span>
+
+					<span class="mui-tab-label">首页</span>
+				</a>
+				<a class="mui-tab-item" href="property.html">
+					<span class="mui-icon  iconfont icon-zhusu"></span>
+
+					<span class="mui-tab-label">物业</span>
+				</a>
+				<a class="mui-tab-item" href="CommunityActivities.html">
+					<span class="mui-icon  iconfont icon-listview"></span>
+
+					<span class="mui-tab-label">社区</span>
+				</a>
+				<a class="mui-tab-item" href="shop.html">
+					<span class="mui-icon  iconfont icon-shaogouwu"></span>
+
+					<span class="mui-tab-label">Mini会</span>
+				</a>
+			</nav>
+	</body>
+
+</html>

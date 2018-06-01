@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>我的住址</title>
+		<meta content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="format-detection" content="email=no">
+		<meta charset="UTF-8">
+		<link rel="stylesheet" href="css/mui.min.css">
+		<script type="text/javascript" src="js/vue.min2.2.js"></script>
+		<script type="text/javascript" src="js/axios.min.js"></script>
+		<script type="text/javascript" src="js/public.js"></script>
+		<script type="text/javascript" src="js/polyfill.min.js"></script>
+		<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+		<link href="css/mystrap.css" rel="stylesheet" type="text/css" />
+
+		<link rel="stylesheet" href="css/style01.css">
+
+		<script language="javascript" src="http://hovertree.com/ziyuan/jquery/jquery-2.2.0.min.js"></script>
+		<script language="javascript" src="js/public.js"></script>
+
+	</head>
+
+	<body>
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript">
+			window.onload = function(){
+					var appuser = sessionStorage.getItem("appuser");
+					if(!appuser){
+						self.location = 'login.html';
+					}
+					var appUser = JSON.parse(appuser);
+					var vw = new Vue({
+					el : "#app",
+					data : {
+						message : "",
+						sites : appUser
+					},
+					methods : {
+						logout: function() {
+							sessionStorage.setItem("appuser", '');
+							self.location = 'login.html';
+						}
+					}
+				})
+			}
+		</script>
+
+		<header class="mui-bar mui-bar-nav" >
+			<a class=" mui-icon mui-action-back mui-icon-left-nav mui-pull-left" style="color:white">
+
+			</a>
+			<h1 class="mui-title">我的住址</h1>
+		</header>
+		<div class="mui-content" style="background: #FFFFFF;" id="app">
+			<div class="mui-card" >
+				<div class="mui-card-content">
+					<br>
+					<table style="width:100%;" cellspacing="0" cellpadding="0"  border="0">
+						<tbody>
+							<tr>
+								<td>
+									<div class="mui-media-body mui-pull-left" style="width: 45vw;">
+										<p class='mui-ellipsis'>小区：{{ sites.name }} </p>
+										<p class='mui-ellipsis'>楼号：{{ sites.buildno }} </p>
+										<p class='mui-ellipsis'>单元号：{{ sites.unitno }}</p>
+										<p class='mui-ellipsis'>房号：{{ sites.roomno }}</p>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</body>
+
+</html>

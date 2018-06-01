@@ -1,0 +1,153 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>我的报修记录</title>
+		<meta content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="format-detection" content="email=no">
+		<meta charset="UTF-8">
+		<link rel="stylesheet" href="css/mui.min.css">
+		<script type="text/javascript" src="js/vue.min2.2.js"></script>
+		<script type="text/javascript" src="js/axios.min.js"></script>
+		<script type="text/javascript" src="js/public.js"></script>
+		<script type="text/javascript" src="js/polyfill.min.js"></script>
+		<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+		<link href="css/mystrap.css" rel="stylesheet" type="text/css" />
+		<link rel="stylesheet" type="text/css" href="./css/icons-extra.css" />
+		<link rel="stylesheet" href="css/style01.css">
+
+		<script language="javascript" src="http://hovertree.com/ziyuan/jquery/jquery-2.2.0.min.js"></script>
+		<script language="javascript" src="js/public.js"></script>
+
+	</head>
+
+	<body>
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript">
+			mui.init();
+		</script>
+		<header class="mui-bar mui-bar-nav">
+			<a class=" mui-icon mui-action-back mui-icon-left-nav mui-pull-left" style="color:white">
+
+			</a>
+			<h1 class="mui-title">我的报修记录</h1>
+		</header>
+		<div class="mui-content" style="background: #FFFFFF;" id="app">
+			<div style="padding: 10px 10px;">
+				<div id="segmentedControl" class="mui-segmented-control">
+					<a id="a1" class="mui-control-item mui-active" href="#item1">全部报修</a>
+					<a id="a2" class="mui-control-item" href="#item2">未接受</a>
+					<a id="a3" class="mui-control-item" href="#item3">已接受</a>
+					<a id="a4" class="mui-control-item" href="#item4">已处理</a>
+				</div>
+			</div>
+
+			<div class="mui-card">
+				<div id="item1" class="mui-card-content mui-control-content mui-active">
+					<div class="mui-card-content" v-for="list1 in sites1">
+						<hr>
+						
+						<p v-if="list1.status==1">&nbsp;保修类型：{{list1.type==1?"居家":"公共"}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;保修状态:&nbsp;&nbsp;未接收</p>
+						<p v-if="list1.status==2">&nbsp;保修类型：{{list1.type==1?"居家":"公共"}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;保修状态:&nbsp;&nbsp;已接受</p>
+						<p v-if="list1.status==3">&nbsp;保修类型：{{list1.type==1?"居家":"公共"}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;保修状态:&nbsp;&nbsp;已处理</p>
+						<p v-if="list1.status==null">&nbsp;保修类型：{{list1.type==1?"居家":"公共"}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;保修状态:&nbsp;&nbsp;null</p>
+						<p>&nbsp;报修时间：{{list1.repairdate}}</p>
+						<p style="color: #333;">&nbsp;保修内容:&nbsp;&nbsp;{{list1.content}}</p>
+					</div>
+				</div>
+				<div id="item2" class="mui-card-content mui-control-content">
+					<div class="mui-card-content" v-for="list in sites2">
+						<hr>
+						<p v-if="list.status==1">&nbsp;保修类型：{{list.type==1?"居家":"公共"}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;保修状态:&nbsp;&nbsp;未接收</p>
+						<p v-if="list.status==2">&nbsp;保修类型：{{list.type==1?"居家":"公共"}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;保修状态:&nbsp;&nbsp;已接受</p>
+						<p v-if="list.status==3">&nbsp;保修类型：{{list.type==1?"居家":"公共"}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;保修状态:&nbsp;&nbsp;已处理</p>
+						<p v-if="list.status==null">&nbsp;保修类型：{{list.type==1?"居家":"公共"}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;保修状态:&nbsp;&nbsp;null</p>
+						<p>&nbsp;报修时间：{{list.repairdate}}</p>
+						<p style="color: #333;">&nbsp;保修内容:&nbsp;&nbsp;{{list.content}}</p>
+					</div>
+				</div>
+				<div id="item3" class="mui-card-content mui-control-content">
+					<div class="mui-card-content" v-for="list in sites3">
+						<hr>
+						<p v-if="list.status==1">&nbsp;保修类型：{{list.type==1?"居家":"公共"}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;保修状态:&nbsp;&nbsp;未接收</p>
+						<p v-if="list.status==2">&nbsp;保修类型：{{list.type==1?"居家":"公共"}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;保修状态:&nbsp;&nbsp;已接受</p>
+						<p v-if="list.status==3">&nbsp;保修类型：{{list.type==1?"居家":"公共"}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;保修状态:&nbsp;&nbsp;已处理</p>
+						<p v-if="list.status==null">&nbsp;保修类型：{{list.type==1?"居家":"公共"}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;保修状态:&nbsp;&nbsp;null</p>
+						<p>&nbsp;报修时间：{{list.repairdate}}</p>
+						<p style="color: #333;">&nbsp;保修内容:&nbsp;&nbsp;{{list.content}}</p>
+					</div>
+				</div>
+				<div id="item4" class="mui-card-content mui-control-content ">
+					<div class="mui-card-content" v-for="list in sites4">
+						<hr>
+						<p v-if="list.status==1">&nbsp;保修类型：{{list.type==1?"居家":"公共"}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;保修状态:&nbsp;&nbsp;未接收</p>
+						<p v-if="list.status==2">&nbsp;保修类型：{{list.type==1?"居家":"公共"}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;保修状态:&nbsp;&nbsp;已接受</p>
+						<p v-if="list.status==3">&nbsp;保修类型：{{list.type==1?"居家":"公共"}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;保修状态:&nbsp;&nbsp;已处理</p>
+						<p v-if="list.status==null">&nbsp;保修类型：{{list.type==1?"居家":"公共"}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;保修状态:&nbsp;&nbsp;null</p>
+						<p>&nbsp;报修时间：{{list.repairdate}}</p>
+						<p style="color: #333;">&nbsp;保修内容:&nbsp;&nbsp;{{list.content}}</p>
+
+						<span v-if="list.status==3&&(list.evaluationcontent==null||list.evaluationcontent=='')" v-on:click="evaluate(list.id)" class="rightp mui-icon-extra mui-icon-extra-comment"></span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<style>
+			.rightp {
+				margin-left: 90%;
+			}
+		</style>
+	</body>
+	<script>
+		window.onload = function() {
+			var appuser = sessionStorage.getItem("appuser");
+			var appUser = JSON.parse(appuser);
+
+			var vm = new Vue({
+				el: '#app',
+
+				data: {
+					sites1: [],
+					sites2: [],
+					sites3: [],
+					sites4: []
+				},
+				methods: {
+					initStart: function() {
+						var self = this;
+						var obj = {
+							"action": "getRepairs",
+							"data": {
+								"userid": appUser.userid,
+								//1 报修 / 2 投诉
+								"tabletype": 1
+							}
+						};
+						var appParam = JSON.stringify(obj);
+						$.post(url, {
+							"appParam": appParam
+						}, function(data) {
+							self.sites1 = data.results1;
+							
+							self.sites2 = data.results2;
+							self.sites3 = data.results3;
+							self.sites4 = data.results4;
+						}, "json");
+
+					},
+					evaluate: function(id) {
+						document.location.href = "houseRepairEvaluate.html?id=" + id;
+					}
+
+				}
+			});
+
+			vm.initStart();
+		}
+	</script>
+
+</html>

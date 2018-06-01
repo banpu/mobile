@@ -1,0 +1,113 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>我的消息</title>
+		<meta content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="format-detection" content="email=no">
+		<meta charset="UTF-8">
+		<link rel="stylesheet" href="css/mui.min.css">
+		<script type="text/javascript" src="js/vue.min2.2.js"></script>
+		<script type="text/javascript" src="js/axios.min.js"></script>
+		<script type="text/javascript" src="js/public.js"></script>
+		<script type="text/javascript" src="js/polyfill.min.js"></script>
+		<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+		<link href="css/mystrap.css" rel="stylesheet" type="text/css" />
+		
+		<link rel="stylesheet" href="css/style01.css">
+		
+
+		<script language="javascript" src="http://hovertree.com/ziyuan/jquery/jquery-2.2.0.min.js"></script>
+		<script language="javascript" src="js/public.js"></script>
+		<style>
+			td{
+				text-align: center;
+			}
+			
+		</style>
+	</head>
+
+	<body>
+		
+		
+		<header class="mui-bar mui-bar-nav" >
+			<a class=" mui-icon mui-action-back mui-icon-left-nav mui-pull-left" style="color:white;">
+				
+			</a>
+			<h1 class="mui-title">我的消息</h1>
+		</header>
+		<div class="mui-content"  id="app">
+			<div class="mui-card" v-for="list in message">
+				<div class="mui-card-content">
+					<div class="mui-card-content-inner">
+						<p>{{list.title}}</p>
+						<p style="color: #333;">
+							{{list.content}}
+						</p>
+					</div>
+				</div>
+				<div class="mui-card-footer">
+					<p class="mui-card-link">{{list.pushdate}}</p>
+				</div>
+			</div>
+			
+			<!--<div class="mui-card">
+				<div class="mui-card-content">
+					<div class="mui-card-content-inner">
+						<p>list.title</p>
+						<p style="color: #333;">
+							list.content
+						</p>
+					</div>
+				</div>
+				<div class="mui-card-footer">
+					<p class="mui-card-link">list.pushDate</p>
+				</div>
+			</div>-->
+		</div>
+		
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript">
+			window.onload = function(){
+			var appuser = sessionStorage.getItem("appuser");
+				// 推送对象id (用户id)
+			var	targetId = JSON.parse(appuser).userid;
+			
+				var vm = new Vue({
+					el: '#app',
+					data: {
+						notice: "notice",
+						message: [],
+						url: url,
+						appuser: appuser
+					},
+					methods:{
+						getAllMessage:function(){
+							var self = this;
+							var obj = {
+								"action":"getMessages",
+								"data":{
+									"userid":targetId
+								}
+							};
+							var param = JSON.stringify(obj);
+							$.post(this.url,{"appParam":param},
+							function(data){
+								self.message = data.results ;
+							},"json")
+						}
+					}
+				});
+				vm.getAllMessage();
+			}
+		</script>
+		
+		
+		
+	</body>
+
+</html>

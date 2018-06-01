@@ -1,0 +1,153 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>热门新闻</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link rel="stylesheet" href="css/iconfont.css">
+		<script type="text/javascript" src="js/vue.min2.2.js"></script>
+		<script type="text/javascript" src="js/axios.min.js"></script>
+		<script type="text/javascript" src="js/public.js"></script>
+		<script type="text/javascript" src="js/polyfill.min.js"></script>
+		<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+		<link href="css/mystrap.css" rel="stylesheet" type="text/css" />
+
+		<script language="javascript" src="http://hovertree.com/ziyuan/jquery/jquery-2.2.0.min.js"></script>
+		<script type="text/javascript" src="js/public.js"></script>
+	</head>
+	<style>
+		.content {
+			margin-top: 54px;
+		}
+		
+		.mui-content a {
+			color: #8F8F94;
+		}
+		
+		.comment {
+			/*margin: auto 2% auto auto;*/
+			background-color: #fff;
+			width: 100%;
+		}
+	</style>
+
+	<body>
+
+		<header class="mui-bar mui-bar-nav" >
+			<a href="index.html" class="mui-icon mui-icon mui-icon-left-nav mui-pull-left" style="color:white"></a>
+			<h1 class="mui-title">热门新闻</h1>
+		</header>
+		<div class="mui-card content" id="app">
+
+			<div class="mui-card-content">
+				<div id="slider" class="mui-slider">
+					<div class="mui-slider-group mui-slider-loop">
+						<!-- 额外增加的一个节点(循环轮播：第一个节点是最后一张轮播) -->
+						<div class="mui-slider-item mui-slider-item-duplicate">
+							<a>
+								<img v-bind:src="picurl+news.image">
+							</a>
+						</div>
+						<!-- 第一张 -->
+						<div class="mui-slider-item">
+							<a>
+								<img src="{{news.image2}}">
+							</a>
+						</div>
+
+						<!-- 额外增加的一个节点(循环轮播：最后一个节点是第一张轮播) -->
+					</div>
+					<div class="mui-slider-indicator">
+						<div class="mui-indicator "></div>
+						<div class="mui-indicator "></div>
+
+					</div>
+				</div>
+				<div class="mui-card-content-inner">
+					<p style="color: #333;">
+						{{news.content}}
+					</p>
+				</div>
+			</div>
+			<div class="mui-card-footer">
+				<div class="mui-content comment">
+					<div id="" style="float: left;">
+
+						<!-- JiaThis Button BEGIN -->
+						<div class="jiathis_style_32x32">
+							<a class="jiathis_button_qzone"></a>
+							<a class="jiathis_button_tsina"></a>
+							<a class="jiathis_button_weixin"></a>
+							<a class="jiathis_button_cqq"></a>
+							<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+						</div>
+					</div>
+					<!--
+					<script type="text/javascript" src="http://v3.jiathis.com/code_mini/jia.js?uid=" charset="utf-8"></script>
+					 JiaThis Button END 
+					<a v-on:click="_showShare()" href="javascript:;" style="text-align: center;"><span class="mui-icon-extra mui-icon-extra-share" style="width: 34px;"></span></a>-->
+				</div>
+			</div>
+			<div class="mui-card-footer" id="hiddendiv" style="display: none; padding-bottom: 40px;">
+				<!-- JiaThis Button BEGIN -->
+				<div class="jiathis_style_32x32">
+					<a class="jiathis_button_qzone"></a>
+					<a class="jiathis_button_tsina"></a>
+					<a class="jiathis_button_weixin"></a>
+					<a class="jiathis_button_cqq"></a>
+					<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+				</div>
+				<script type="text/javascript" src="http://v3.jiathis.com/code_mini/jia.js?uid=" charset="utf-8"></script>
+				<!-- JiaThis Button END -->
+			</div>
+
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script type="text/jscript">
+		function GetQueryString(name) {
+			var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+			var r = window.location.search.substr(1).match(reg);
+			if(r != null) return unescape(r[2]);
+			return null;
+		}
+		var id=GetQueryString('id');
+		
+		window.onload = function() {
+				var vm = new Vue({
+						el: '#app',
+						data: {
+							news:"news",
+							url: url
+						},
+						methods: {
+							getNotice: function() {
+								var self = this;
+								var obj = {
+									"action": "getSingleNews",
+									"data": {
+										"id": id,
+									}
+								};
+								var appParam = JSON.stringify(obj);
+
+								$.post(this.url, {
+									"appParam": appParam
+								}, function(data) {
+									//接收数据
+									self.news = data.info;
+								}, "json");
+							}
+					}
+				});
+			vm.getNotice();
+
+			}
+
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>添加报修</title>
+		<meta content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="format-detection" content="email=no">
+		<meta charset="UTF-8">
+		<script src="js/mui.view.js"></script>
+		<script type="text/javascript" src="js/vue.min2.2.js"></script>
+		<script type="text/javascript" src="js/axios.min.js"></script>
+		<script type="text/javascript" src="js/public.js"></script>
+		<script type="text/javascript" src="js/polyfill.min.js"></script>
+		<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+		<link href="css/mystrap.css" rel="stylesheet" type="text/css" />
+		<link rel="stylesheet" href="css/style01.css">
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link rel="stylesheet" href="css/feedback-page.css">
+		<script language="javascript" src="http://hovertree.com/ziyuan/jquery/jquery-2.2.0.min.js"></script>
+		<script language="javascript" src="js/public.js"></script>
+
+	</head>
+
+	<style type="text/css">
+		body {
+			margin-bottom: 60px !important;
+		}
+		
+		.mui-checkbox label,
+		.mui-radio label {
+			display: inline-block;
+			float: none;
+			width: 100%;
+			padding-right: 51px;
+		}
+		
+		#label2 {
+			margin: -1px 0px 0 -10px;
+		}
+		/**图片上传**/
+		
+		.content {
+			height: 100%;
+		}
+		
+		.card {
+			width: 100%;
+			margin-left: 0px;
+		}
+		
+		.commit {
+			margin: 0 auto;
+			line-height: 1.1;
+			padding: 10px 15px;
+			display: inherit;
+			width: 80%;
+			background-color: orangered;
+		}
+	</style>
+
+	<body>
+		<script src="js/mui.min.js"></script>
+		<script>
+			// 监听tap事件，解决 a标签 不能跳转页面问题
+			mui('body').on('tap', 'a', function() {
+				document.location.href = this.href;
+			});
+		</script>
+		<header class="mui-bar mui-bar-nav">
+			<a href="property.html" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color:white;"></a>
+			<h1 class="mui-title">添加报修</h1>
+			<a href="tel:10086" class="mui-icon mui-icon-phone" style="float:right;color:#FFFFFF">
+				<span style="font-size: 14px;">客服</span></a>
+		</header>
+		<div class="mui-content" id="app" style="background-color: white;">
+			<div class="mui-card">
+				<form class="mui-input-group">
+					<div class="mui-input-row">
+						<label>姓名</label>
+						<input id="ownername" name="ownername" type="text" class="mui-input-clear mui-input" placeholder="请输入姓名">
+					</div>
+					<div class="mui-input-row">
+						<label>手机</label>
+						<input id="mobile" name="mobile" type="text" class="mui-input-clear mui-input" placeholder="请输入手机号码">
+					</div>
+					<div class="mui-input-row">
+						<label>房号</label>
+						<select id="roomName" name="roomName" @change="getRoom">
+							<option value=''>请选择</option>
+						</select>
+					</div>
+					<div class="mui-input-row" id="type" style="width: 100%;float: left;">
+						<div class="mui-radio " style="width: 45%;float: left;">
+							<label>居家维修</label>
+							<input name="type" type="radio" value="1" checked>
+						</div>
+						<div class="mui-radio " style="width: 45%;float: left;">
+							<label>公共维修</label>
+							<input name="type" type="radio" value="2">
+						</div>
+
+					</div>
+				</form>
+			</div>
+
+			<textarea id="textarea" name="content" rows="5" placeholder="报修内容(不能为空)" style="height: 90%;width: 95%;margin: 0 0 0 10px;"></textarea>
+
+			<div class="mui-card">
+				<div class="mui-content">
+					<div class="mui-card card">
+						<div class="mui-card-content">
+							<div class="mui-card-content-inner">
+								<div class="mui-input-row" style="height: auto;">
+									<div style="text-align: left;width: 100%;height: auto;margin-bottom: 10px;">
+										<span>上传图片，有图有真相：</span>
+									</div>
+									<div id="feedback" class="mui-page feedback">
+										<div id='image-list' class="row image-list">
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<button v-on:click="checkValue()" class="mui-btn mui-btn-block mui-btn-blue">提交</button>
+			</div>
+		</div>
+
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript">
+//			var appuser = sessionStorage.getItem("appuser");
+//					if(!appuser){
+//						self.location = 'login.html';
+//					}
+//			var appUser = JSON.parse(appuser);
+//			var appuserid = appUser.userid;
+//			var orgid = appUser.orgid;
+			var appuserid = 154;
+			avr orgid = 4;
+			var rep = new Vue({
+				el: '#app',
+				data: {
+					url: url,
+				},
+				methods: {
+					loadRoom: function() {
+						var obj = {
+							"action": "selectRoomByUserId",
+							"data": {
+								"userId": appuserid,
+							}
+						};
+						var appParam = JSON.stringify(obj);
+						$.post(this.url, {
+							"appParam": appParam
+						}, function(data) {
+							for(var i = 0; i < data.size; i++) {
+								var buildno = data.repairList[i].buildno;
+								var unitno = data.repairList[i].unitno;
+								var roomno = data.repairList[i].roomno;
+								var myoption = buildno + "-" + unitno + "-" + roomno;
+								var option = new Option(myoption);
+								$("<option value='" +
+									data.repairList[i].roomId + "-" +
+									data.repairList[i].buildno + "-" +
+									data.repairList[i].unitno + "-" +
+									data.repairList[i].roomno + "'>" + buildno + "-" + unitno + "-" + roomno + "</option>").appendTo("#roomName");
+							}
+
+						}, "json");
+					},
+					getRoom: function() {
+						$("#roomName option[value= '']").remove();
+					},
+					checkValue: function() {
+						var self = this;
+						var contactname = document.getElementById("ownername").value;
+						var mobile = document.getElementById("mobile").value;
+						var housevalue = document.getElementById("roomName").value;
+						var content = document.getElementById("textarea").value;
+						var type = $('input:radio[name="type"]:checked').val();
+						var houseid = housevalue.split("-")[0];
+						var buildno = housevalue.split("-")[1];
+						var unitno = housevalue.split("-")[2];
+						var roomno = housevalue.split("-")[3];
+
+						if(contactname.length == 0) {
+							mui.alert('请输入业主姓名', '警告', function() {});
+							//							plus.ui.toast("姓名不能为空");
+							return;
+						}
+
+						if(mobile.length == 0) {
+							mui.alert('请输入业主手机号码', '警告', function() {});
+							//							plus.ui.toast("手机不能为空");
+							return;
+						}
+
+						if(housevalue.length == '') {
+							mui.alert('请选择房号', '警告', function() {});
+							//							plus.ui.toast("手机不能为空");
+							return;
+						}
+						if(content.length == 0) {
+							mui.alert('请输入保修内容', '警告', function() {});
+							//							plus.ui.toast("手机不能为空");
+							return;
+						}
+						//图片
+						var images = document.getElementsByClassName("image-item");
+						if(images.length > 4) {
+							mui.alert('最多上传三张图片', '警告', function() {});
+							return;
+						}
+
+						var imga = images[0].style.backgroundImage;
+						var imgb = '';
+						var imgc = '';
+						var imgd = '';
+
+						var repimg1 = '';
+						var repimg2 = '';
+						var repimg3 = '';
+						var repimg4 = '';
+
+						if(images.length == 2) {
+							imgb = images[1].style.backgroundImage;
+						}
+						if(images.length == 3) {
+							imgb = images[1].style.backgroundImage;
+							imgc = images[2].style.backgroundImage;
+						}
+						if(images.length == 4) {
+							imgb = images[1].style.backgroundImage;
+							imgc = images[2].style.backgroundImage;
+							imgd = images[3].style.backgroundImage;
+						}
+
+						if(imga != '') {
+							repimg1 = imga.split("\"")[1].split(",")[1];
+						}
+						if(imgb != '') {
+							repimg2 = imgb.split("\"")[1].split(",")[1];
+						}
+						if(imgc != '') {
+							repimg3 = imgc.split("\"")[1].split(",")[1];
+						}
+						if(imgd != '') {
+							repimg4 = imgd.split("\"")[1].split(",")[1];
+						}
+						// 数据无误提交
+
+						var obj = {
+							"action": "addRepair",
+							data: {
+								"houseid": houseid,
+								"contactname": contactname,
+								"mobile": mobile,
+								"type": type,
+								"content": content,
+								"img1": repimg1,
+								"img2": repimg2,
+								"img3": repimg3,
+								"img4": repimg4,
+								"buildno": buildno,
+								"unitno": unitno,
+								"roomno": roomno,
+								"tabletype": 1,
+								"appuserid": appuserid,
+								"orgId": orgid
+							}
+						};
+						var appPa = JSON.stringify(obj);
+						$.post(this.url, {
+								appParam: appPa
+							},
+							function(res) {
+							mui.alert('请耐心等待', '添加报修成功', function() {});
+							document.location.href= "property.html";
+							}, "json");
+
+					}
+				}
+			});
+			window.onload = function() {
+				rep.loadRoom();
+			}
+		</script>
+
+		<script src="js/feedback-page.js"></script>
+
+	</body>
+
+</html>

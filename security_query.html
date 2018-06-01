@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>保安</title>
+		<meta content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="format-detection" content="email=no">
+		<meta charset="UTF-8">
+		<link rel="stylesheet" href="css/mui.min.css">
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/vue.min2.2.js"></script>
+		<script type="text/javascript" src="js/axios.min.js"></script>
+		<script type="text/javascript" src="js/public.js"></script>
+		<script type="text/javascript" src="js/polyfill.min.js"></script>
+		<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+		<link href="css/mystrap.css" rel="stylesheet" type="text/css" />
+		<link rel="stylesheet" href="css/style01.css">
+
+		<script language="javascript" src="http://hovertree.com/ziyuan/jquery/jquery-2.2.0.min.js"></script>
+
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a href="property.html" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"  ></a>
+			<h1 class="mui-title">保安模块</h1>
+		</header>
+		<div class="mui-content" id="app" style="background-color: white;">
+			<div class="mui-card" style="margin-top: 25px;">
+				<form class="mui-input-group">
+					
+					<div class="mui-input-row" >
+						
+						<input id="room" type="text" class="mui-input-clear mui-input" placeholder="房号-栋号-单元号" />
+					</div>
+					<!--<div class="mui-input-row">
+						<input id="car" type="text" class="mui-input-clear mui-input" placeholder="请输入车牌号">
+					</div>-->
+			</div>
+			</form>
+			<button id="checkval" v-on:click="checkvalue()" class="mui-btn mui-btn-block mui-btn-primary" style="width: 95%; margin: 0 10px 0 10px;">查询</button>
+
+			<!--<div class="mui-card"  v-for="list in roomlist" >
+				<div class="mui-card-content">
+					<div class="mui-card-content-inner">
+						<ul class="mui-table-view">
+							<li class="mui-table-view-cell">姓名： {{list.ownername}}</li>
+							<li class="mui-table-view-cell">手机号码：{{list.ownermobile}}</li>
+							<li class="mui-table-view-cell">房号：{{list.roomid}}</li>
+							<li class="mui-table-view-cell">车牌号：{{list.license}}</li>
+						</ul>
+					</div>
+				</div>-->
+			
+				
+				
+			<div class="mui-card"  style="margin-top: 20px;">
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell">姓名： {{room.ownername}}</li>
+					<li class="mui-table-view-cell">手机号码：{{room.ownermobile}}</li>
+					<li class="mui-table-view-cell">房号{{room.roomid}}; {{room.buildno}}-{{room.unitno}}-{{room.roomno}}</li>
+				</ul>
+				<ul class="mui-table-view" v-for="list in license">
+					<li class="mui-table-view-cell">车牌号：{{list.license}}</li>
+				</ul>
+			</div>
+			
+			<!-- 根绝车牌查询房间
+			<div class="mui-card"  style="margin-top: 20px;">
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell">车牌号：{{licensesingle.license}}</li>
+				</ul>
+				<ul class="mui-table-view" v-for="room in rooms">
+					<li class="mui-table-view-cell">姓名： {{room.ownername}}</li>
+					<li class="mui-table-view-cell">手机号码：{{room.ownermobile}}</li>
+					<li class="mui-table-view-cell">房号{{room.roomid}}; {{room.buildno}}-{{room.unitno}}-{{room.roomno}}</li>
+				</ul>
+				
+			</div>-->
+			
+		</div>
+
+		</div>
+
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript">
+			// 保安的orgid
+			var securityInfo_orgid = sessionStorage.getItem("securityInfo_orgid");
+			
+			var vm = new Vue({
+				el: '#app',
+				data: {
+					url: url,
+					room:"",
+					license:[]
+//					licensesingle:"",
+//					rooms:[]
+				},
+				methods: {
+					checkvalue: function() {
+						
+						var self = this;
+						var room = document.getElementById("room").value;
+						//						alert(room)
+						var roomarray = room.split("-");
+						if(room.length>0&&roomarray.length != 3) {
+				mui.alert('格式例如：5-1-501','房间号格式错误', function() {
+			});
+							return;
+						} else {
+							var buildno = roomarray[0];
+							var unitno = roomarray [1];
+							var roomno = roomarray[2];
+						}
+//						var car = document.getElementById("car").value;
+//						if(room.length == 0 && car.length == 0) {
+//						mui.alert('格式如:5-1-501','请输入房号', function() {
+//						});
+//							return;
+//						}
+						var obj = {
+							"action": "securitySearch",
+							"data": {
+								"orgid": securityInfo_orgid,
+								"buildno": buildno,
+								"unitno": unitno,
+								"roomno": roomno,
+								"carnum": ""
+							}
+						};
+						var appParam = JSON.stringify(obj);
+						$.post(this.url, {
+							"appParam": appParam
+						}, function(data) {
+							if(data.responsestaus == 0) {
+								
+								return;
+							} else {
+								// 房间查询车
+								self.room= data.room;
+								self.license = data.license;
+								// 车查询房间
+								//self.licensesingle= data.licensesingle;
+								//self.rooms = data.rooms;
+							}
+						});
+
+					}
+				}
+			});
+		</script>
+	</body>
+
+</html>

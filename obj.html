@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title id="h2"></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <style>
+            body {
+                font-family: Monospace;
+                background-color: #000;
+                color: #fff;
+                margin: 0px;
+                /*overflow: hidden;*/
+            }
+            #info {
+                color: #fff;
+                position: absolute;
+                top: 10px;
+                width: 100%;
+                text-align: center;
+                z-index: 100;
+                display:block;
+            }
+            #info a, .button { color: #f00; font-weight: bold; text-decoration: underline; cursor: pointer } #loading {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            margin-top: -40px;
+            margin-left: -40px;
+        }
+        </style>
+        <link rel="stylesheet" href="css/mui.min.css">
+        <link rel="stylesheet" type="text/css" href="css/app.css" />
+
+    </head>
+
+    <body>
+        <header class="mui-bar mui-bar-nav" style="background: #F9F7EC;">
+            <a href="JavaScript:history.back(-1)" class=" mui-icon mui-icon-left-nav mui-pull-left" style="color:#000000"></a>
+                        <h1 class="mui-title" id="h1"></h1>
+        </header>
+        <div id="loading">
+               
+        </div>
+        <script src="js/three.js"></script>
+        <script src="js/three.min.js"></script>
+        <script src="js/OrbitControls.js"></script>
+        <script src="js/Detector.js"></script>
+        <script src="js/OBJLoader.js"></script>
+        <script type="text/javascript" src="js/vue.min2.2.js"></script>
+        <script type="text/javascript" src="js/axios.min.js"></script>
+        <script type="text/javascript" src="js/public.js"></script>
+        <script type="text/javascript" src="js/polyfill.min.js"></script>
+        <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+        <script> 
+        window.onload = function() {
+                 var LocString = String(window.document.location.href);
+                function GetQueryString(str) {
+                    var rs = new RegExp("(^|)" + str + "=([^&]*)(&|$)", "gi").exec(LocString),
+                        tmp;
+                    if(tmp = rs) return tmp[2];
+                }
+                var getId = GetQueryString("id");
+                var p = document.getElementById("h1");
+                p.innerHTML = decodeURI(GetQueryString("title")+"--文物");
+                var p = document.getElementById("h2");
+                p.innerHTML = decodeURI(GetQueryString("title"));
+                 var vm = new Vue({
+                    el: '#app',
+                    data: {
+                        message: "无",
+                        baseUrl: url1,
+                        vrId:getId,
+                        bites:[]
+                    },
+                    methods: {
+                        greet: function(){
+                            $('.liang').css("display","block");
+                        },
+                        cancel: function(){
+                            $('.liang').css("display","none");
+                        },
+                        getAbout: function() {
+                            var self = this;
+                            var params = "funcName=getVrAntiquesInfo" + "&Id="+getId; //+exhid;
+                            axios.post('curl.php', params).then(function(response) {
+                                    self.bites = response.data.payload.antiquesInfo; 
+                                    console.log(self.bites);
+                                    console.log(self.bites.name);
+                                     // $('.liang').css("display","none");
+                                     // $(".bailiang").css("display","block");
+                                    $('.mui-title').append("<span>"+self.bites.name+"</span>");
+                                    self.message = response.data.code;
+                                    var container;  
+                                    var camera, scene, renderer,startTime,lastFrameTime;  
+                                    var mouseX = 0, mouseY = 0;  
+                                    var autoRotation = true;
+                                    var pauseTimer = null;
+                                    var mouseX = 0, mouseY = 0;
+                                    var windowHalfX = renderWidth() / 2;
+                                    var windowHalfY = renderHeight() / 2;
+                                    var objModel;
+                                    init();  
+                                    animate();  
+                                    function init() {  
+                                  
+                                        container = document.createElement( 'div' );  
+                                        document.body.appendChild( container );  
+                                        var fov = 1; //拍摄距离  
+										var near = 10; //最小范围  
+										var far = 7000; //最大范围  
+
+									//	camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 10, 70000);
+									    camera = new THREE.PerspectiveCamera(fov, window.innerWidth / window.innerHeight, near, far); 
+										camera.position.z = 300;
+						
+                                        
+                                       // camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 10, 70000 );  
+                                        //camera.position.z = 2000;  
+                                        scene = new THREE.Scene();  
+                                        var ambient = new THREE.AmbientLight( 0x404040 );  
+                                        scene.add( ambient );  
+                                        var directionalLight = new THREE.DirectionalLight( 0xffeedd );  
+                                        directionalLight.position.set( 0, 0, 1 );  
+                                        directionalLight.position.set( 500, 500, 500 );  
+                                        scene.add( directionalLight );  
+                                            var light = new THREE.SpotLight( 0xffffff, 5 );
+                                        var manager = new THREE.LoadingManager();  
+                                        manager.onProgress = function ( item, loaded, total ) {  
+                                            console.log( item, loaded, total );  
+                                        };  
+                                           var rotation = new THREE.Euler();
+                                        var texture = new THREE.Texture();  
+                                        var onProgress = function ( xhr ) {  
+                                            if ( xhr.lengthComputable ) {  
+                                                var percentComplete = xhr.loaded / xhr.total * 100;  
+                                                // console.log( Math.round(percentComplete, 2) + '% downloaded' );  
+                                                $('#loading').children().remove();
+                                                $("#loading").append("<span id='text'>"+Math.round(percentComplete, 2)+'%'+"</span>");
+                                                if(Math.round(percentComplete, 2)==100){
+                                                    $('#loading').children().remove();
+                                                }
+                                            }  
+                                        };  
+                                        var onError = function ( xhr ) {  
+                                        };  
+                                        var loader = new THREE.ImageLoader( manager );  
+                                        loader.load('../uploads/'+self.bites.image, function ( image ) {  
+                                            texture.image = image;  
+                                            texture.needsUpdate = true;
+                                        } );  
+                                        var objLoader = new THREE.OBJLoader( manager ); 
+                                        objLoader.load('../uploads/'+self.bites.web3d, function ( object ) {
+                                            objModel = object;
+                                            object.traverse( function ( child ) {  
+                                                if ( child instanceof THREE.Mesh ) {  
+                                                    child.material.map = texture;  
+                                                }  
+                                            } );  
+                                            object.updateMatrix();  
+                                            scene.add( object );
+                                            startTime = Date.now();
+                                            lastFrameTime = startTime;
+                                        }, onProgress, onError );  
+                                  
+                                        renderer = new THREE.WebGLRenderer();  
+                                        renderer.setPixelRatio( window.devicePixelRatio );  
+                                        renderer.setSize( renderWidth() , renderHeight() );
+                                        container.appendChild( renderer.domElement );
+                                           controls = new THREE.OrbitControls( camera );
+                                           controls.target.set( 0, 0, 0 );
+                                           controls.minDistance = 120 ;
+                                           controls.update();
+                                        document.addEventListener( 'mousemove', onDocumentMouseMove, false );  
+                                        window.addEventListener( 'resize', onWindowResize, false );  
+                                    }  
+                                  
+                                    function onWindowResize() {  
+                                        camera.aspect = window.innerWidth / window.innerHeight;  
+                                        camera.updateProjectionMatrix();  
+                                  
+                                        renderer.setSize( window.innerWidth, window.innerHeight );  
+                                    }  
+                                  
+                                    function onDocumentMouseMove( event ) {  
+                                    }  
+                                                window.addEventListener( 'touchstart', function(e){
+                                                    stopRotation();
+                                                }, false );
+                                                window.addEventListener( 'touchend', function(e){
+                                                    startRotation();
+                                                }, false );
+                                                window.addEventListener( 'mousedown', function(e){
+                                                    stopRotation();
+                                                }, false );
+                                                window.addEventListener( 'mouseup', function(e){
+                                                    startRotation();
+                                                }, false );
+                                         function stopRotation(){
+                                                autoRotation = false;
+                                                if(pauseTimer != null){
+                                                    clearTimeout(pauseTimer);
+                                                    pauseTimer = null;
+                                                }
+                                            }
+
+                                            function startRotation(){
+                                                pauseTimer = setTimeout('autoRotation = true;', 3000);
+                                            }
+
+                                            function onWindowResize() {
+
+                                                windowHalfX = renderWidth() / 2;
+                                                windowHalfY = renderHeight() / 2;
+
+                                                camera.aspect = renderWidth() / renderHeight();
+                                                camera.updateProjectionMatrix();
+
+                                                renderer.setSize( renderWidth(), renderHeight() );
+
+                                            }
+                                    function animate() {  
+                                            requestAnimationFrame( animate );
+                                                var currentTime = Date.now();
+                                                var timeEscape = ( currentTime - lastFrameTime ) / 1000;
+                                                if (autoRotation && typeof objModel == 'object') {
+                                                    objModel.rotation.y = objModel.rotation.y + timeEscape * 1.0;
+                                                }
+
+                                                lastFrameTime = Date.now();
+                                                render();
+                                    }  
+                                    function render() {  
+                                        renderer.render( scene, camera );  
+                                    }
+                                          function renderWidth(){
+                                                return document.documentElement.clientWidth;
+                                            }
+
+                                            function renderHeight(){
+                                                return document.documentElement.clientHeight;
+                                            }
+                                })
+                                .catch(function(error) {
+                                    console.log(error);
+                                });
+
+                        },
+                        
+                        rever1: function() {
+                            var self = this;
+
+                        }
+
+                    }
+                });
+
+                vm.getAbout();
+               // $('.mui-title').append("")
+            }
+         
+        </script>
+    </body>
+</html>

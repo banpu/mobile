@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>评论</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<script src="js/mui.min.js"></script>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<script type="text/javascript" src="js/vue.min2.2.js"></script>
+		<script type="text/javascript" src="js/axios.min.js"></script>
+		<script type="text/javascript" src="js/public.js"></script>
+		<script type="text/javascript" src="js/polyfill.min.js"></script>
+		<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+		<script type="text/javascript" src="js/md5.js"></script>
+		<style>
+			.title {
+				margin: 20px 15px 10px;
+				color: #6d6d72;
+				font-size: 15px;
+			}
+		</style>
+	</head>
+
+	<body style="background: #F9F7EC;">
+
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon mui-icon-left-nav mui-pull-left" style="color:#000000"></a>
+			<h1 class="mui-title">评论</h1>
+		</header>
+		<div class="mui-content" style="background: #F9F7EC;" id="app">
+
+			<div class="mui-card">
+
+				<div class="mui-card-content-inner">
+					<textarea id="demo" cols="10" rows="3"></textarea>
+					<button type="button" class="mui-btn mui-btn-negative" v-on:click="send()" id="send">发送</button>
+					<button type="button" class="mui-btn " v-on:click="clear()" style="background-color: #D0c3ad;" id="clear">清空</button>
+
+				</div>
+
+				<div class="mui-card-content" v-for="list in sites">
+					<hr>
+					<p>&nbsp;用户：{{list.followperson}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;发表日期:&nbsp;&nbsp;{{list.followtime}}</p>
+					<p style="color: #333;">&nbsp;{{list.followcontent}}</p>
+				</div>
+
+			</div>
+
+		</div>
+
+	</body>
+
+	<script>
+		function GetQueryString(name) {
+			var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+			var r = window.location.search.substr(1).match(reg);
+			if(r != null) return unescape(r[2]);
+			return null;
+		}
+		window.onload = function() {
+			//新闻id
+			var id = GetQueryString('id');
+			//			var aQuery = window.location.href.split("=");
+			//			var getId = aQuery[1];
+			if(id == null)
+				return;
+			var vm = new Vue({
+				el: '#app',
+
+				data: {
+					sites: []
+
+				},
+				methods: {
+					getAbout: function() {
+						var self = this;
+						var obj = {
+							//type类型（1-公告，2-新闻，3-话题，4-活动）
+							"action": "getFollows",
+							"data": {
+								"id": id
+								//								"startid":1,
+								//								"lastid":2
+							}
+						};
+						var appParam = JSON.stringify(obj);
+						$.post(url, {
+							"appParam": appParam
+						}, function(data) {
+							self.sites = data.results;
+							//							alert(data.action);
+							//							alert(data.responsestaus);
+							//							alert(data.message);
+							//							alert("results:" + JSON.stringify(data.results));
+
+						}, "json");
+
+					},
+					send: function() {
+
+						var appuser = sessionStorage.getItem("appuser");
+						if(appuser) {} else {
+							var btnArray = ['否', '是'];
+							mui.confirm('您没有登录，是否登录', '请先登录', btnArray, function(e) {
+
+								if(e.index == 1) {
+									document.location.href = "login.html";
+								} else {
+									return;
+								}
+							})
+						}
+						var appUser = JSON.parse(appuser);
+
+						var target = document.getElementById("demo");
+						if(target.value.length == 0) {
+							mui.alert("内容不能为空", '警告！', function() {});
+							return;
+						}
+
+						var paramobj = {
+							"action": "addFollow",
+							"data": {
+								//新闻id
+								"followId": id,
+								"content": target.value,
+								"orgid": appUser.orgid,
+								"personid": appUser.userid,
+								"personname": appUser.nickname
+								//								"startid":1,
+								//								"lastid":2
+							}
+						};
+						var appParam = JSON.stringify(paramobj);
+						$.post(url, {
+							"appParam": appParam
+						}, function(data) {
+							var code = data.responsestaus;
+
+							if(code == "1") {
+								//								mui.alert("需要审核过后才能显示。", "评论成功！", function() {
+								//									
+								//								
+								//								});
+								mui.alert("评论成功！", "提示信息", function() {
+									document.location.reload();
+								});
+								target.value = '';
+
+							} else {
+								mui.alert(data.message, "评论失败！", function() {});
+							}
+
+						}, "json");
+
+					},
+					clear: function() {
+
+						var target = document.getElementById("demo");
+
+						target.value = "";
+					}
+					//					get: function() {
+					//						var self = this;
+					//						var params = "funcName=userCommentList" + "&Id=" + getId; //+exhid;
+					//						axios.post('curl.php', params).then(function(response) {
+					//								self.sites = response.data.payload.commentList;
+					//
+					//								//alert(JSON.stringify(self.sites));
+					//								var target = document.getElementById("demo");
+					//								//target.value = JSON.stringify(self.sites);
+					//							})
+					//							.catch(function(error) {
+					//								//console.log(error);
+					//							});
+					//					}
+
+				}
+			});
+
+			vm.getAbout();
+			//vm.set();
+			//vm.get();
+
+		}
+	</script>
+
+</html>

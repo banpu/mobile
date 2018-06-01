@@ -1,0 +1,336 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>我的报修评价</title>
+		<meta content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="format-detection" content="email=no">
+		<meta charset="UTF-8">
+		<link rel="stylesheet" href="css/mui.min.css">
+		<script type="text/javascript" src="js/vue.min2.2.js"></script>
+		<script type="text/javascript" src="js/axios.min.js"></script>
+		<script type="text/javascript" src="js/public.js"></script>
+		<script type="text/javascript" src="js/polyfill.min.js"></script>
+		<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+		<script type="text/javascript" src="js/startScore.js"></script>
+		<link href="css/mystrap.css" rel="stylesheet" type="text/css" />
+
+		<link rel="stylesheet" href="css/style01.css">
+
+		<script language="javascript" src="http://hovertree.com/ziyuan/jquery/jquery-2.2.0.min.js"></script>
+		<script language="javascript" src="js/public.js"></script>
+		<style>
+			ul,
+			li,
+			ol {
+				list-style: none;
+			}
+			/* 重置文本格式元素 */
+			
+			a {
+				text-decoration: none;
+				cursor: pointer;
+				color: #333333;
+				font-size: 14px;
+			}
+			
+			a:hover {
+				text-decoration: none;
+			}
+			
+			.clearfix::after {
+				display: block;
+				content: '';
+				height: 0;
+				overflow: hidden;
+				clear: both;
+			}
+			/*星星样式*/
+			
+			.content {
+				width: 600px;
+				margin: 0 auto;
+				padding-top: 20px;
+			}
+			
+			.title {
+				font-size: 14px;
+				background: #dfdfdf;
+				padding: 10px;
+				margin-bottom: 10px;
+			}
+			
+			.block {
+				width: 100%;
+				margin: 0 0 20px 0;
+				padding-top: 10px;
+				padding-left: 50px;
+				line-height: 21px;
+			}
+			
+			.block .star_score {
+				float: left;
+			}
+			
+			.star_list {
+				height: 21px;
+				margin: 50px;
+				line-height: 21px;
+			}
+			
+			.block p,
+			.block .attitude {
+				padding-left: 20px;
+				line-height: 21px;
+				display: inline-block;
+			}
+			
+			.star_score {
+				background: url(images/stark2.png);
+				width: 160px;
+				height: 21px;
+				position: relative;
+			}
+			
+			.star_score a {
+				height: 21px;
+				display: block;
+				text-indent: -999em;
+				position: absolute;
+				left: 0;
+			}
+			
+			.star_score a:hover {
+				background: url(images/stars2.png);
+				left: 0;
+			}
+			
+			.star_score a.clibg {
+				background: url(images/stars2.png);
+				left: 0;
+			}
+			/*星星样式*/
+			
+			.show_number {
+				padding-left: 50px;
+				padding-top: 20px;
+			}
+			
+			.show_number li {
+				width: 240px;
+				border: 1px solid #ccc;
+				padding: 10px;
+				margin-right: 5px;
+				margin-bottom: 20px;
+			}
+			
+			.atar_Show {
+				background: url(images/stark2.png);
+				width: 160px;
+				height: 21px;
+				position: relative;
+				float: left;
+			}
+			
+			.atar_Show p {
+				background: url(images/stars2.png);
+				left: 0;
+				height: 21px;
+				width: 134px;
+			}
+			
+			.show_number li span {
+				display: inline-block;
+				line-height: 21px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<script src="js/mui.min.js"></script>
+
+		<header class="mui-bar mui-bar-nav">
+			<a class=" mui-icon mui-action-back mui-icon-left-nav mui-pull-left" style="color:#000000">
+
+			</a>
+			<h1 class="mui-title">我的报修评价</h1>
+		</header>
+		<div class="mui-content" style="background: #FFFFFF;">
+			<div class="mui-card" style="background: #EEFFFF;">
+				<div class="mui-card-content">
+					<br>
+					<table style="width:100%;" cellspacing="0" cellpadding="0" bordercolor="#000000" border="0">
+						<tbody>
+							<tr>
+								<td>
+									<div class="mui-media-body mui-pull-left" style="margin-left: 14px;">
+										<p id="content" class='mui-ellipsis'></p>
+										<p id="type" class='mui-ellipsis'></p>
+										<p id="repairDate" class='mui-ellipsis'></p>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="mui-card">
+				<div class="mui-card-content">
+					<div style="float: left;">
+						<div id="startone1" class="block clearfix">
+							服务态度
+						</div>
+					</div>
+					<div style="float: left;">
+						<div id="startone" class="block clearfix">
+							<div class="star_score"></div>
+							<span class="fenshu" hidden="hidden" id="fenshu1"></span>
+							<div class="attitude"></div>
+						</div>
+					</div>
+					<div style="float: left;">
+						<div id="starttwo2" class="block clearfix">
+							工程质量
+						</div>
+					</div>
+					<div style="float: left;">
+						<div id="starttwo" class="block clearfix">
+							<div class="star_score"></div>
+							<span class="fenshu" hidden="hidden" id="fenshu2"></span>
+							<div class="attitude"></div>
+						</div>
+					</div>
+					<div style="float: left;">
+						<div id="startthree3" class="block clearfix">
+							响应速度
+						</div>
+					</div>
+					<div style="float: left;">
+						<div id="startthree" class="block clearfix">
+							<div class="star_score"></div>
+							<span class="fenshu" hidden="hidden" id="fenshu3"></span>
+							<div class="attitude"></div>
+						</div>
+					</div>
+					<script>
+						scoreFun($("#startone"));
+						scoreFun($("#starttwo"));
+						scoreFun($("#startthree"));
+					</script>
+				</div>
+			</div>
+			<div class="mui-card">
+				<div class="mui-card-content" id="app">
+					<div class="mui-input-row" style="margin: 10px 5px;">
+						<textarea id="textarea" rows="5" placeholder="请在这里输入您的留言内容"></textarea>
+					</div>
+					<p style="margin: 5vw 7.5vw;">
+						<a v-on:click="send" class="mui-btn mui-btn-warning mui-btn-block" style="padding: 5px 20px; width: 80vw;">确认评论</a>
+					</p>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script type="text/jscript">
+		function GetQueryString(name) {
+			var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+			var r = window.location.search.substr(1).match(reg);
+			if(r != null) return unescape(r[2]);
+			return null;
+		}
+
+		var appuser = sessionStorage.getItem("appuser");
+		var appUser = JSON.parse(appuser);
+		window.onload = function() {
+			var id = GetQueryString('id');
+			var vm = new Vue({
+				el: '#app',
+
+				data: {
+					info: Object
+				},
+				methods: {
+					initStart: function() {
+						var self = this;
+						var obj = { //getSingleRepair
+							"action": "getSingleRepair",
+							"data": {
+								"id": id
+							}
+						};
+						var appParam = JSON.stringify(obj);
+						$.post(url, {
+							"appParam": appParam
+						}, function(data) {
+							document.getElementById("content").innerHTML = "内容：" + data.info.content;
+							//保修类型：1 居家，2公共
+							var type = data.info.type == 1 ? "居家" : "公共";
+							document.getElementById("type").innerHTML = "保修类型：" + type;
+							//报修时间：
+							document.getElementById("repairDate").innerHTML = "报修时间：" + data.info.repairdate;
+						}, "json");
+
+					},
+					send:function(){
+						
+					var btnArray = ['否', '是'];
+					mui.confirm('确定评价吗？', '提示信息', btnArray, function(e) {
+
+						if(e.index == 1) {
+							vm.enter();
+						} else {
+							return;
+						}
+					})
+					},
+					enter: function() {
+						//服务态度
+						var serviceattitude = $("#fenshu1").html();
+						//工程质量
+						var constructionquality = document.getElementById("fenshu2").innerText;
+						//响应速度
+						var corrvelocity = document.getElementById("fenshu3").innerText;
+						//评价内容
+						var evaluationContent = document.getElementById("textarea").value;
+						var self = this;
+						var obj = {
+							"action": "addEvaluate",
+							"data": {
+								"id": id,
+								"userid": appUser.userid,
+								"serviceattitude" : parseInt(serviceattitude),
+
+								"constructionquality": parseInt(constructionquality),
+
+								"corrvelocity" : parseInt(corrvelocity),
+
+								"content" : evaluationContent
+							}
+						};
+						var appParam = JSON.stringify(obj);
+
+						$.post(url, {
+							"appParam": appParam
+						}, function(data) {
+							if(data.responsestaus == 1) {
+								mui.alert("", "评价成功！", function() {
+									document.location.href="houseRepairRecord.html";
+								});
+								
+							} else {
+								mui.alert(data.message, "评价失败！", function() {});
+							}
+
+						}, "json");
+					}
+				}
+			});
+			vm.initStart();
+		}
+	</script>
+
+</html>

@@ -1,0 +1,173 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>个人中心</title>
+		<meta content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="format-detection" content="email=no">
+		<meta charset="UTF-8">
+		<link rel="stylesheet" href="css/mui.min.css">
+		<script type="text/javascript" src="js/vue.min2.2.js"></script>
+		<script type="text/javascript" src="js/axios.min.js"></script>
+		<script type="text/javascript" src="js/public.js"></script>
+		<script type="text/javascript" src="js/polyfill.min.js"></script>
+		<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+		<link href="css/mystrap.css" rel="stylesheet" type="text/css" />
+		<link rel="stylesheet" href="css/style01.css">
+		<script language="javascript" src="http://hovertree.com/ziyuan/jquery/jquery-2.2.0.min.js"></script>
+		<script language="javascript" src="js/public.js"></script>
+		<script type="text/javascript" src="js/vue-resource.min.js"></script>
+	</head>
+
+	<body>
+		<script src="js/mui.min.js"></script>
+		<script>
+			// 监听tap事件，解决 a标签 不能跳转页面问题
+			mui('body').on('tap', 'a', function() {
+				document.location.href = this.href;
+			});
+		</script>
+		<script type="text/javascript">
+			window.onload = function(){
+/*				$.post("${basePath}/App/appmain.shtml",appParam : JSON.stringify({
+					action : "getSingleTopic",
+					data : {
+						id : "338"t
+					}
+				}),function(data){
+					
+				})
+				
+*/				
+					var appuser = sessionStorage.getItem("appuser");
+					if(!appuser){
+						self.location = 'login.html';
+					}
+					var appUser = JSON.parse(appuser);
+					var vw = new Vue({
+					el : "#app",
+					data : {
+						message : "",
+						sites : appUser
+					},
+					methods : {
+						logout: function() {
+							sessionStorage.setItem("appuser", '');
+							self.location = 'login.html';
+						}
+					}
+				})
+			}
+		</script>
+		
+		<div id="app">
+			<header class="mui-bar mui-bar-nav" >
+				<a href="index.html" class=" mui-icon  mui-icon-left-nav mui-pull-left" style="color:white">
+					<!--mui-action-back-->
+				</a>
+				<a @click="logout()" class="mui-pull-right mui-icon">
+					<span  style="color:white; font-size: 16px;" >
+						退出登录
+					</span>
+				</a>
+				<h1 class="mui-title">个人中心</h1>
+			</header>
+			<div class="mui-content" style="background: #FFFFFF;">
+				<div class="mui-card" style="background: #EEFFFF;">
+					<div class="mui-card-content">
+						<br>
+							<table style="width:100%;" cellspacing="0" cellpadding="0" bordercolor="#000000" border="0">
+								<tbody >
+									<tr>
+										<td>
+											<div class="mui-media-object mui-pull-left" style="width: 25vw;height: 30vw;">
+												<div style="width: 24vw;height: 24vw;border-radius: 100%;margin: 2vw 2vw;overflow: hidden;">
+													<img v-bind:src="sites.imageurl" style="width: 24vw;height: 24vw;"/>
+												</div>
+											</div>
+										</td>
+										<td>
+											<div class="mui-media-body mui-pull-left"style="width: 45vw;">
+												<p class='mui-ellipsis'>用户名：{{ sites.nickname }} </p>
+												<p class='mui-ellipsis'>积分：{{ sites.currentscore }}  </p>
+												<p class='mui-ellipsis'>等级：{{ sites.levelname }}</p>
+												<p class='mui-ellipsis'>当前小区：{{ sites.name }}</p>
+											</div>
+										</td>
+										<td>
+											<li>
+											<a href="updatePerson.html"><img src="images/edit.png"/></a>
+											</li>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+					</div>
+				</div>
+				<div class="mui-card">
+					<div class="mui-card-content">
+						<ul id="list" class="mui-table-view mui-table-view-chevron">
+							<li class="mui-table-view-cell">
+								<a class="mui-navigate-right" href="payment.html">
+									<span class="mui-icon mui-icon-email">
+									</span>
+									我的缴费
+								</a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a class="mui-navigate-right" href="paymentRecord.html">
+									<span class="mui-icon mui-icon-contact">
+									</span>
+									缴费记录
+								</a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a class="mui-navigate-right" href="RepairList.html">
+									<span class="mui-icon mui-icon-compose">
+									</span>
+									评价管理
+								</a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a class="mui-navigate-right" href="houseRepairRecord.html">
+									<span class="mui-icon mui-icon-home">
+									</span>
+									我的报修
+								</a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a class="mui-navigate-right" href="complain.html">
+									<span class="mui-icon mui-icon-info">
+									</span>
+									我的投诉
+								</a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a class="mui-navigate-right" href="message.html">
+									<span class="mui-icon mui-icon-chatboxes">
+									</span>
+									我的消息
+								</a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a class="mui-navigate-right" href="address.html">
+									<span class="mui-icon mui-icon-home-filled">
+									</span>
+									我的住址
+								</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+					<p style="margin: 5vh 10vw;">
+						<a class="mui-btn mui-btn-warning mui-btn-block" style="padding: 5px 20px; width: 80vw;">检查升级</a>
+					</p>
+			</div>
+		</div>
+	</body>
+
+</html>

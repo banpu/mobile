@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>智慧物业</title>
+		<meta content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="format-detection" content="email=no">
+		<meta charset="UTF-8">
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link rel="stylesheet" href="css/iconfont.css">
+		<script type="text/javascript" src="js/vue.min2.2.js"></script>
+		<script type="text/javascript" src="js/axios.min.js"></script>
+		<script type="text/javascript" src="js/public.js"></script>
+		<script type="text/javascript" src="js/polyfill.min.js"></script>
+		<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+		<link href="css/mystrap.css" rel="stylesheet" type="text/css" />
+
+		<script language="javascript" src="http://hovertree.com/ziyuan/jquery/jquery-2.2.0.min.js"></script>
+		<script language="javascript" src="js/public.js"></script>
+	</head>
+
+	<body>
+		<script src="js/mui.min.js"></script>
+		<script>
+			// 监听tap事件，解决 a标签 不能跳转页面问题
+			mui('body').on('tap', 'a', function() {
+				document.location.href = this.href;
+			});
+		</script>
+		<script src="js/mui.min.js"></script>
+		<script>
+			window.onload = function() {
+				var appuser = sessionStorage.getItem("appuser");
+				var orgid = 4;
+				var userid = '';
+				if(appuser) {
+					userid = JSON.parse(appuser).userid;
+					orgid = JSON.parse(appuser).orgid;
+				}
+				
+				var vm = new Vue({
+					el: '#app',
+					data: {
+						message: this.notice,
+						news: [],
+						url: url,
+						appuser: appuser,
+						signinStatus:''
+					},
+					methods: {
+						getNotice: function() {
+							var self = this;
+							//var appuser =  sessionStorage.getItem("appuser");
+							var obj = {
+								//type类型（1-公告，2-新闻，3-话题，4-活动）
+								"action": "getIndexData",
+								"data": {
+									"orgid":orgid,
+									"type": 1,
+								}
+							};
+							var appParam = JSON.stringify(obj);
+
+							$.post(this.url, {
+								"appParam": appParam
+							}, function(data) {
+								//接收数据
+								var notice= "尊敬的业主先生，小区暂无公告";
+								self.notices = data.postTopic;
+								if(null!=self.notices){
+									this.message = self.notices.title;
+									$("#banpu").html(this.message);
+								}else{
+									$("#banpu").html("尊敬的业主先生，小区暂无公告");
+								}
+//								alert(self.notices.title);
+								
+								self.news = data.news;
+								//alert(JSON.stringify(data.postTopic));
+								//alert("results:" + JSON.stringify(data.results));
+							}, "json");
+						},
+						init: function() {
+							$.post(this.url, {
+								appParam: JSON.stringify({
+									action: "signIn",
+									data: {
+										userid: userid
+									}
+								})
+							}, {
+								emulateJSON: true
+							}).then(function(res) {
+								if(res.responsestatus == 0) {
+									alert(res.message);
+								} else {
+									this.signinStatus = res.signinStatus;
+
+								}
+							})
+						},
+						doSignIn: function() {
+						$.post(this.url, {
+								appParam: JSON.stringify({
+									action: "doSignIn",
+									data: {
+										userid: userid
+									}
+								})
+							}, {
+								emulateJSON: true
+							}).then(function(res) {
+								if(res.data.responsestatus == 0) {
+									alert(res.data.message);
+								} else {
+									window.location.reload()
+
+								}
+							})
+						}
+
+					}
+				});
+				vm.getNotice();
+				if(appuser) {
+					vm.init();
+				}
+			}
+		</script>
+		
+		<div id="app">
+
+			<header class="mui-bar mui-bar-nav">
+				<!--<a href="menu.html" class=" mui-icon mui-action-menu mui-icon-bars mui-pull-left" style="color:#000000">
+			</a>-->
+				<a href="personal.html" class="mui-icon mui-action-menu mui-icon-contact mui-pull-right" style="color:#000000">
+					<span style="font-size: 14px;">个人中心</span></a>
+				<h1 class="mui-title">智慧物业</h1>
+			</header>
+
+			<div class="mui-content" style="margin: 5px 0 0 5px;">
+			
+				
+			</div>
+			
+				<div class="mui-card">
+					<div class="mui-card-header" style="background: #EEFFFF;">
+						<span class="mui-icon iconfont icon-tixing" style="font-size: 23px;"></span> 公告 </div>
+					<div class="mui-card-content">
+						<div class="mui-card-content-inner">
+
+							<div class="mui-card-content">
+								<div class="mui-card-content"  >
+									<!--<div class="mui-card-content-inner">-->
+									<a href="notice.html" class="testa" id="banpu">
+									</a>
+								</div>
+
+							</div>
+
+						</div>
+					</div>
+				</div>
+
+				<!-- 新闻 -->
+				<div class="mui-card">
+					<div class="mui-card-header" style="background: #EEFFFF;">
+						<span class="iconfont icon-listview" style="font-size: 23px;"></span> 热门新闻
+					</div>
+					<div class="mui-card-content">
+
+						<!-- 遍历新闻 -->
+						<li class="mui-table-view-cell mui-media" v-for="list in news">
+							<a class='mui-navigate-right' v-bind:href="'HotNews.html?id='+list.id ">
+								<div class="mui-media-body">
+									<!--<p class='mui-ellipsis' >-->
+									{{list.title}}
+									<!--</p>-->
+								</div>
+							</a>
+						</li>
+
+					</div>
+				</div>
+
+			</div>
+			<!--中间部分  end-->
+
+			<!-- 最下面四个按钮 -->
+			<nav class="mui-bar mui-bar-tab">
+				<a class="mui-tab-item " href="index.html" sytle="color:   #0E90D2;">
+					<span class="mui-icon iconfont  icon-shouye"></span>
+
+					<span class="mui-tab-label">首页</span>
+				</a>
+				<a class="mui-tab-item" href="property.html">
+					<span class="mui-icon  iconfont icon-zhusu"></span>
+
+					<span class="mui-tab-label">物业</span>
+				</a>
+				<a class="mui-tab-item" href="CommunityActivities.html">
+					<span class="mui-icon  iconfont icon-listview"></span>
+
+					<span class="mui-tab-label">社区</span>
+				</a>
+				<a class="mui-tab-item" href="shop.html">
+					<span class="mui-icon  iconfont icon-shaogouwu"></span>
+
+					<span class="mui-tab-label">Mini会</span>
+				</a>
+			</nav>
+		</div>
+		
+	</body>
+
+</html>

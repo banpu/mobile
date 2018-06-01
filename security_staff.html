@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>保安</title>
+		<meta content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="format-detection" content="email=no">
+		<meta charset="UTF-8">
+		<link rel="stylesheet" href="css/mui.min.css">
+		<script type="text/javascript" src="js/vue.min2.2.js"></script>
+		<script type="text/javascript" src="js/axios.min.js"></script>
+		<script type="text/javascript" src="js/public.js"></script>
+		<script type="text/javascript" src="js/polyfill.min.js"></script>
+		<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+		<link href="css/mystrap.css" rel="stylesheet" type="text/css" />
+
+		<link rel="stylesheet" href="css/style01.css">
+
+		<script language="javascript" src="http://hovertree.com/ziyuan/jquery/jquery-2.2.0.min.js"></script>
+
+	</head>
+
+	<body>
+		<script src="js/mui.min.js"></script>
+		<script>
+			// 监听tap事件，解决 a标签 不能跳转页面问题
+			mui('body').on('tap', 'a', function() {
+				document.location.href = this.href;
+			});
+		</script>
+
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">保安模块</h1>
+		</header>
+		<div class="mui-content" id="app" style="background-color: white;">
+			<div class="mui-card">
+				<form class="mui-input-group">
+					<div class="mui-input-row">
+						<label>账号</label>
+						<input id="phone" type="text" class="mui-input-clear mui-input" placeholder="请输入账号">
+					</div>
+					<div class="mui-input-row">
+						<label>密码</label>
+						<input id="pwd" type="password" class="mui-input-clear mui-input" placeholder="请输入密码">
+					</div>
+			</div>
+			</form>
+
+			<button id="checkval" v-on:click="checkvalue()" class="mui-btn mui-btn-block mui-btn-primary" style="width: 95%; margin: 0 10px 0 10px;">登录</button>
+		</div>
+		
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript">
+				var vm = new Vue({
+					el:'#app',
+					data:{
+						url: url,
+					},
+					methods:{
+						checkvalue: function() {
+							var self = this;
+//							alert(orgId);
+						var phone = document.getElementById("phone").value;
+						var pwd = document.getElementById("pwd").value;
+						if(phone.length == 0||pwd.length == 0) {
+						mui.alert('请输入正确的账号密码','错误', function() {
+						});
+							
+							return;
+						}
+
+						
+
+						var obj = {
+							"action": "securityVerfiyPassword",
+							"data": {
+								"phone": phone,
+								"password": pwd
+							}
+						};
+						var appParam = JSON.stringify(obj);
+						$.post(this.url, {
+							"appParam": appParam
+						}, function(data) {
+							if(data.responsestaus==0||data.info==null){
+						mui.alert('请输入正确的账号密码','错误', function() {
+						});
+								return ;
+							}else{
+						sessionStorage.setItem("securityInfo_orgid", data.info.orgid);
+						//alert(data.info.orgid);
+						document.location.href= "security_query.html";
+							}
+						}, "json");
+
+					}
+					}
+				})
+				
+		</script>
+	</body>
+
+</html>

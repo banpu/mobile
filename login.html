@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>登录</title>
+		<script src="js/mui.min.js"></script>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<script type="text/javascript" src="js/vue.min2.2.js"></script>
+		<script type="text/javascript" src="js/axios.min.js"></script>
+		<script type="text/javascript" src="js/public.js"></script>
+		<script type="text/javascript" src="js/polyfill.min.js"></script>
+		<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+		<script type="text/javascript" src="js/md5.js"></script>
+
+		<style type="text/css">
+			.mui-content {
+				margin-top: 12px;
+			}
+			
+			.mui-btn {
+				width: 80px;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<header class="mui-bar mui-bar-nav" >
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color:white"></a>
+			<h1 class="mui-title">登录</h1>
+		</header>
+
+		<div class="mui-content" id="app">
+			<form class="mui-input-group">
+				<div class="mui-input-row">
+					<label>帐号</label>
+					<input v-model="input1" type="text" class="mui-input-clear" placeholder="请输入帐号名" id="username">
+				</div>
+				<div class="mui-input-row">
+					<label>密码</label>
+					<input v-model="input2" type="password" class="mui-input-clear" placeholder="请输入密码" id="password">
+				</div>
+			</form>
+
+			<div class="mui-content-padded" align="center">
+				
+				<button type="button" class="mui-btn mui-btn-negative" v-on:click="logout()" id="logout" style="visibility: hidden;">退出登陆</button>
+				<button type="button" class="mui-btn mui-btn-negative" v-on:click="login()" id="login">登陆</button>
+				<button type="button" class="mui-btn " v-on:click="regist()" style="background-color: #D0c3ad;" id="reg">注册</button>
+			</div>
+			<div class="mui-card-footer">
+
+			</div>
+		</div>
+
+		<javascript>
+
+			<script>
+				window.onload = function() {
+					var session1 = sessionStorage.getItem("appuser");
+					if(session1) {
+
+						var dlogin = document.getElementById("login");
+						var dreg = document.getElementById("reg");
+						var dlogout = document.getElementById("logout");
+						dlogin.style.visibility = 'hidden';
+						dreg.style.visibility = 'hidden';
+						dlogout.style.visibility = 'visible';
+						//if(div3.style.visibility=='visible') div3.style.visibility='hidden';  
+						//alert("您已经登录了...");
+						//self.location = 'index.html';
+					}
+				}
+				new Vue({
+					el: '#app',
+					data: {
+						input1: '',
+						input2: '',
+						md5pwd: ''
+
+					},
+					methods: {
+						say: function(message) {
+							alert(message)
+						},
+						regist: function() {
+							self.location = 'regist.html';
+						},
+						//退出登录
+						logout: function() {
+							sessionStorage.setItem("appuser", '');
+							self.location = 'login.html';
+						},
+						//登录
+						login: function() {
+
+							//							this.md5pwd = hex_md5(this.input2).toUpperCase();
+							//							var pwd = this.md5pwd.toUpperCase();
+							var pwd = this.input2;
+							var usr = this.input1;
+							//this.md5pwd=hex_md5(this.md5pwd);
+							//alert(this.md5pwd);
+
+							if(this.input1.length == 0) {
+								mui.alert('用户名不能为空', '错误', function() {});
+								return;
+							}
+							if(this.input2.length == 0) {
+								mui.alert('密码不能为空', '错误', function() {});
+								return;
+							}
+
+							$.post(url, {
+									appParam: JSON.stringify({
+										action: 'appUserLogin',
+										data: {
+											nickname: this.input1,
+											password: pwd,
+											pushkey: "",
+											devicetype: "",
+											ip: returnCitySN.cip
+										}
+									})
+								},
+								function(data) {
+									//password = hex_md5(password);
+									//alert(pwd);
+
+									var status = data.responsestatus;
+									//alert(code);
+									if(status == 1) {
+										if(data.data.checkflag == 0) {
+											mui.alert("该用户还没有通过审核，请耐心等待", "消息", function() {
+
+											});
+											return;
+										}
+										data.data.imageurl = picurl + data.data.imageurl;
+										sessionStorage.setItem("appuser", JSON.stringify(data.data));
+										sessionStorage.setItem("roomid", data.roomid);
+										//var session1 =sessionStorage.getItem("username");
+										//alert('dd'+session1);
+										self.location = 'index.html';
+									} else {
+
+										mui.alert(data.message, "消息", function() {
+
+										});
+									}
+
+								}, "json");
+
+							/*
+							mui.ajax('curl.php', {
+								data: {
+									userName: this.input1,//username.value,
+									password: this.input2,//password.value
+								},
+								dataType: 'json',
+								type: 'POST',
+								timeout: 10000,
+								success: function(data) {
+									//{"reslut":1}
+									alert(data.result);
+									if(data.result == 1) {
+										//登录成功
+										plus.ui.toast("登录成功");
+										mui.openWindow({
+											url: 'list.html',
+											id: 'list'
+										})
+									} else {
+										//登录失败
+										plus.ui.toast(data.data);
+									}
+								},
+								error: function() {}
+							})
+							*/
+
+						}
+
+					}
+				})
+			</script>
+
+		</javascript>
+
+		<!--<script type="text/javascript" charset="utf-8">
+			function regist() {
+				self.location = 'regist.html';
+			}
+
+			mui.init();
+			mui.plusReady(function() {
+				var reg = document.getElementById("reg");
+				var login = document.getElementById("login");
+				reg.addEventListener('tap', function() {
+					mui.openWindow({
+						url: 'reg.html',
+						id: 'reg'
+					})
+				});
+				login.addEventListener('tap', function() {
+					var username = document.getElementById("username");
+					var password = document.getElementById("password");
+					if(username.value.length == 0) {
+						plus.ui.toast("用户名不能为空");
+						return;
+					}
+					if(password.value.length == 0) {
+						plus.ui.toast("密码不能为空");
+						return;
+					}
+					mui.ajax('http://192.168.0.7/newssystem/index.php/Home/User/login', {
+						data: {
+							username: username.value,
+							password: password.value
+						},
+						dataType: 'json',
+						type: 'POST',
+						timeout: 10000,
+						success: function(data) {
+							//{"reslut":1}
+							if(data.result == 1) {
+								//登录成功
+								plus.ui.toast("登录成功");
+								mui.openWindow({
+									url: 'list.html',
+									id: 'list'
+								})
+							} else {
+								//登录失败
+								plus.ui.toast(data.data);
+							}
+						},
+						error: function() {}
+					})
+				})
+
+			})
+		</script>-->
+		<script src="http://pv.sohu.com/cityjson?ie=utf-8"></script>
+	</body>
+
+</html>

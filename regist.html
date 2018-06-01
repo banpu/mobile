@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>注册页</title>
+		<link href="css/mui.min.css" rel="stylesheet" />
+
+		<script src="js/mui.min.js"></script>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<script type="text/javascript" src="js/vue.min2.2.js"></script>
+		<script type="text/javascript" src="js/axios.min.js"></script>
+		<script type="text/javascript" src="js/public.js"></script>
+		<script type="text/javascript" src="js/polyfill.min.js"></script>
+		<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+		<script type="text/javascript" src="js/md5.js"></script>
+		<script type="text/javascript" src="js/vue-resource.min.js"></script>
+		<script type="text/javascript" src="js/ProjectPath.js"></script>
+		<script type="text/javascript" src="js/Validform.min.js"></script>
+		<style type="text/css">
+			.mui-content {
+				margin-top: 12px;
+			}
+			
+			.mui-btn {
+				width: 95%;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" >
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color:white"></a>
+			<h1 class="mui-title">注册</h1>
+		</header>
+		<div class="mui-content" id="app">
+			<div class="mui-card">
+				<div class="mui-card-header">注册信息填写</div>
+				<form class="mui-input-group">
+					<div class="mui-input-row">
+						<label>小区*</label>
+						<select id="orgid" @change="orgChange" v-model="orgid">
+							<option value="">-请选择-</option>
+						</select>
+					</div>
+					<div class="mui-input-row">
+						<label>房屋号*</label>
+						<select id="roomCode" @change="roomChange" v-model="roomid">
+							<option value="">-请选择-</option>
+						</select>
+					</div>
+					<div class="mui-input-row">
+						<label>真实姓名*</label>
+						<input type="text" class="" placeholder="请输入姓名" id="realname" v-model="realname">
+					</div>
+					<div class="mui-input-row">
+						<label>用户名*</label>
+						<input type="text" class="mui-input-clear" placeholder="请输入用户名" id="username" v-model="nickname">
+					</div>
+					<div class="mui-input-row">
+						<label>密码*</label>
+						<input type="password" class="mui-input-clear" placeholder="请输入密码" id="password" v-model="password">
+					</div>
+					<div class="mui-input-row">
+						<label>确认密码*</label>
+						<input type="password" class="mui-input-clear" placeholder="请输入密码" id="password2" v-model="password2">
+					</div>
+					<div class="mui-input-row">
+						<label>手机号*</label>
+						<input type="text" class="mui-input-clear" placeholder="请输入手机号" id="phone" v-model="phone">
+					</div>
+					<div class="mui-input-row">
+						<label>短信验证码*</label>
+						<button type="button" v-on:click="getloginVerifyCode()" class="mui-btn" style="width: 26vw;margin-right: 2vw;" id="getloginVerifyCode">获取验证码</button>
+						<input type="text" placeholder="请输入验证码" id="verifycode" style="width: 33vw;" v-model="verifycode">
+					</div>
+				</form>
+			</div>
+			<div class="mui-content-padded" align="center">
+				<button type="button" class="mui-btn mui-btn-negative" v-on:click="regist()" id="reg">注册</button>
+			</div>
+		</div>
+
+		<script>
+			window.onload = function() {
+
+				var vw = new Vue({
+					el: '#app',
+					data: {
+						phone: '',
+						phoneValid: /^1(3|4|5|7|8)\d{9}$/,
+						orgsites: [],
+						roomsites: [],
+						orgid: '',
+						roomid: '',
+						nickname: '',
+						nicknameValid: /^[\u4E00-\u9FA5\uf900-\ufa2d\w\.\s]{6,18}$/,
+						passwordValid: /^(?![a-z]+$)(?![0-9]+$)(?![A-Z]+$)(?![\\W_]+$)[a-zA-Z0-9\\W_][^ ]{7,15}$/,
+						password: '',
+						password2: '',
+						verifycode: '',
+						verifycodeValid: '',
+						countdown: 2,
+						realname: '',
+						realnameValid: /^[\u4E00-\u9FA5]{1,6}$/
+
+					},
+					methods: {
+						say: function(message) {
+							alert(message)
+						},
+						regist: function() {
+							if(this.orgid == '') {
+								mui.alert('请选择小区', '错误', function() {});
+								return;
+							}
+							if(this.roomid == '') {
+								mui.alert('请选择房屋', '错误', function() {});
+								return;
+							}
+							if(!this.realnameValid.test(this.realname)) {
+								mui.alert('真实姓名不正确，请填写', '错误', function() {});
+								return;
+							}
+							if(!this.nicknameValid.test(this.nickname)) {
+								mui.alert('用户名请填写6到18位字符！', '错误', function() {});
+								return;
+							}
+							if(!this.passwordValid.test(this.password)) {
+								mui.alert('密码(数字、大写字母、小写字母、特殊字符)必须包含其中两项，长度8-16', '错误', function() {});
+								return;
+							}
+							if(this.password != this.password2) {
+								mui.alert('两次密码不一样', '错误', function() {});
+								alert("两次密码不一样");
+								return;
+							}
+							if(!this.phoneValid.test(this.phone)) {
+								mui.alert('电话号码格式不对，请重新填写', '错误', function() {});
+								return;
+							}
+							if(this.verifycode == '') {
+								mui.alert('请填写验证码', '错误', function() {});
+								return;
+							}
+							if(this.verifycodeValid != this.verifycode) {
+								mui.alert('验证码不正确', '错误', function() {});
+								return;
+							}
+							var ownerkey = $("#roomCode").find("option:selected").html();
+							alert(ownerkey);
+							this.$http.post(url, {
+								appParam: JSON.stringify({
+									action: "appUserRegist",
+									data: {
+										nickname: this.nickname,
+										password: this.password,
+										mobile: this.phone,
+										orgid: this.orgid,
+										verifycode: this.verifycode,
+										pushkey: '',
+										devicetype: '',
+										realname: this.realname,
+										roomid: this.roomid,
+										ownerkey: ownerkey
+									}
+								})
+							}, {
+								emulateJSON: true
+							}).then(function(res) {
+								if(res.data.responsestatus == 0) {
+									alert(res.data.message);
+								} else {
+									mui.alert(res.data.message + "请耐心等待管理员审核", '错误', function() {});
+									self.location = 'login.html';
+								}
+							})
+							//var reg = document.getElementById("reg");
+							//alert(password1.value);
+							//var md5pwd = hex_md5(password1.value).toUpperCase();
+							//var pwd = md5pwd.toUpperCase();
+
+						},
+						init: function() {
+							this.$http.post(url, {
+								appParam: JSON.stringify({
+									action: "getAllOrg"
+								})
+							}, {
+								emulateJSON: true
+							}).then(function(res) {
+								if(res.data.responsestatus == 0) {
+									alert(res.data.message);
+								} else {
+									orgsites = res.data.data;
+									for(var i = 0; i < orgsites.length; i++) {
+										$("<option value='" + orgsites[i].id + "'>" + orgsites[i].name + "</option>").appendTo("#orgid");
+									}
+								}
+							})
+						},
+						orgChange: function() {
+							$("#orgid option[value = '']").remove();
+							$("#roomCode option").remove();
+							$("<option value=''>-请选择-</option>").appendTo("#roomCode");
+							this.$http.post(url, {
+								appParam: JSON.stringify({
+									action: "loadRoomCode",
+									data: {
+										orgid: this.orgid
+									}
+								})
+							}, {
+								emulateJSON: true
+							}).then(function(res) {
+								if(res.data.responsestatus == 0) {
+									alert(res.data.message);
+								} else {
+									if(res.data.data.length == 0) {
+										mui.alert('该小区还没有房屋', '错误', function() {});
+										return;
+									}
+									roomsites = res.data.data;
+									for(var i = 0; i < roomsites.length; i++) {
+										$("<option value='" + roomsites[i].roomid + "'>" + roomsites[i].buildno + "-" + roomsites[i].unitno + "-" + roomsites[i].roomno + "</option>").appendTo("#roomCode");
+									}
+								}
+							})
+						},
+						roomChange: function() {
+							$("#roomCode option[value = '']").remove();
+						},
+						getloginVerifyCode: function() {
+							var obj = $("#getloginVerifyCode");
+							if(this.orgid == '') {
+								mui.alert('请选择小区', '错误', function() {});
+								return;
+							}
+							if(!this.phoneValid.test(this.phone)) {
+								mui.alert('电话号码格式不对，请重新填写', '错误', function() {});
+								return;
+							}
+							if(this.countdown == 2) {
+								this.$http.post(url, {
+									appParam: JSON.stringify({
+										action: "getloginVerifyCode",
+										data: {
+											orgid: this.orgid,
+											phone: this.phone
+										}
+									})
+								}, {
+									emulateJSON: true
+								}).then(function(res) {
+									if(res.data.responsestatus == 0) {
+										alert(res.data.message);
+									} else {
+										this.verifycodeValid = res.data.data.verifycode;
+										alert(res.data.data.verifycode);
+									}
+								})
+							}
+							if(this.countdown == 0) {
+								obj.attr("disabled", false);
+								obj.html("获取验证码");
+								this.countdown = 2;
+								return;
+							} else {
+								obj.attr("disabled", "disabled");
+								obj.html("重新发送(" + this.countdown + ")");
+								this.countdown--;
+							}
+							setTimeout(function() {
+								vw.getloginVerifyCode()
+							}, 1000)
+						}
+					}
+				})
+				vw.init();
+			}
+		</script>
+
+		<script type="text/javascript" charset="utf-8">
+			mui.init();
+			mui.plusReady(function() {
+				var username = document.getElementById("username");
+				var password = document.getElementById("password");
+				var nickname = document.getElementById("nickname");
+				var reg = document.getElementById("reg");
+				reg.addEventListener('tap', function() {
+					if(username.value.length == 0) {
+						plus.ui.toast("用户名不能为空");
+						return;
+					}
+					if(password.value.length == 0) {
+						plus.ui.toast("密码不能为空");
+						return;
+					}
+					if(nickname.value.length == 0) {
+						plus.ui.toast("昵称不能为空");
+						return;
+					}
+					mui.ajax('http://192.168.0.7/newssystem/index.php/Home/User/reg', {
+						data: {
+							username: username.value,
+							password: password.value,
+							nickname: nickname.value
+						},
+						dataType: 'json', //数据格式类型
+						type: 'POST', //http请求类型
+						timeout: 10000, //超时设置
+						success: function(data) {
+							//处理成功返回的数据
+							//{'result':1,'data':"注册成功"}
+							if(data.result == 1) {
+								plus.ui.toast(data.data);
+								mui.back();
+							} else {
+								plus.ui.toast(data.data);
+							}
+						},
+						error: function() {
+
+						}
+					})
+				})
+			})
+		</script>
+	</body>
+
+</html>
