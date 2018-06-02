@@ -1,6 +1,6 @@
-var url = "http://47.93.32.64:8080/zhwyyun/App/appmain.shtml";
+var url = "http://127.0.0.1:8080/zhwyyun/App/appmain.shtml";
 //图片的加载路径
-var picurl= "http://47.93.32.64:8080/zhwyyun/";
+var picurl= "http://127.0.0.1:8080/zhwyyun/";
 
 var script= document.createElement("script");
 script.type="text/javascript";
